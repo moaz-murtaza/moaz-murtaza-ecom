@@ -147,12 +147,23 @@ class ProductGridModal {
 
     variantsContainer.innerHTML = '';
 
-    // Get unique option names with fallback
-    const optionNames = (product.options || []).map(opt => opt.name).filter(Boolean);
-    if (!optionNames.length) return;
+    // Get option definitions and force UI order: Color -> Size -> remaining
+    const options = (product.options || []).filter(opt => opt && opt.name);
+    if (!options.length) return;
+    const getRoleRank = (optionName) => {
+      const role = this.getOptionRole(optionName);
+      if (role === 'color') return 0;
+      if (role === 'size') return 1;
+      return 2;
+    };
+    const orderedOptions = [...options]
+      .map((opt, idx) => ({ ...opt, _index: idx }))
+      .sort((a, b) => getRoleRank(a.name) - getRoleRank(b.name) || a._index - b._index);
 
     // Create variant groups for each option
-    optionNames.forEach((optionName, optionIndex) => {
+    orderedOptions.forEach((option) => {
+      const optionName = option.name;
+      const optionIndex = options.findIndex(opt => opt.name === optionName);
       const uniqueValues = [
         ...new Set(
           (product.variants || [])
@@ -426,9 +437,23 @@ class ProductGridModal {
   }
 
   formatPrice(price) {
-    // Convert cents to dollars and format
-    const dollars = (price / 100).toFixed(2);
-    return `$${dollars}`;
+    if (price === null || price === undefined || price === '') {
+      return '$0.00';
+    }
+
+    // Shopify /products/{handle}.json commonly returns decimal strings ("30.00").
+    if (typeof price === 'string') {
+      const parsed = Number(price.replace(/[^0-9.-]/g, ''));
+      return Number.isFinite(parsed) ? `$${parsed.toFixed(2)}` : '$0.00';
+    }
+
+    // If numeric and large enough, treat as cents; otherwise treat as dollars.
+    if (typeof price === 'number') {
+      const normalized = price >= 1000 ? price / 100 : price;
+      return `$${normalized.toFixed(2)}`;
+    }
+
+    return '$0.00';
   }
 
   stripHtml(html) {
