@@ -330,7 +330,7 @@
 }
 
 .variant-option--color.active {
-  background-color: transparent;
+  background-color: #000000;
   color: #ffffff;
 }
 
