@@ -367,7 +367,7 @@
   .gift-guide-banner__overlay-button {
     position: absolute;
     left: 50%;
-    top: 337px;
+    top: 300px;
     transform: translateX(-50%);
     margin: 0;
     padding: 13px 20px;
