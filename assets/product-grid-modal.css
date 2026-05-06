@@ -280,7 +280,7 @@
 }
 
 .variant-option--color.active {
-  background-color: #ececec;
+  background-color: #00000;
   font-weight: 500;
   box-shadow: none;
 }
