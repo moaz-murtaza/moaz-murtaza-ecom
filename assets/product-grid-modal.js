@@ -106,8 +106,8 @@ class ProductGridModal {
 
     // Update image
     const image = modal.querySelector('[data-modal-image]');
-    if (image && product.featured_image) {
-      image.src = product.featured_image.src;
+    if (image) {
+      image.src = this.getProductImageUrl(product);
       image.alt = product.title;
     }
 
@@ -166,9 +166,10 @@ class ProductGridModal {
       const group = document.createElement('div');
       group.className = 'variant-group';
       group.innerHTML = `<label class="variant-group__label">${optionName}</label>`;
+      const optionRole = this.getOptionRole(optionName);
 
-      // First option as color selector with left borders, other options as dropdown
-      if (optionIndex === 0) {
+      // Color as radio-style buttons with left border, size as dropdown.
+      if (optionRole === 'color') {
         const optionsContainer = document.createElement('div');
         optionsContainer.className = 'variant-group__color-options';
 
@@ -180,22 +181,27 @@ class ProductGridModal {
           button.dataset.optionName = optionName;
           button.dataset.optionValue = value;
           button.setAttribute('data-color', value.toLowerCase());
+          button.setAttribute('role', 'radio');
+          button.setAttribute('aria-checked', 'false');
 
           // Set left border color based on the value
           const borderColor = this.getColorValue(value);
-          button.style.borderLeftColor = borderColor;
+          button.style.setProperty('--variant-color', borderColor);
 
           button.addEventListener('click', (e) => {
             e.preventDefault();
             optionsContainer.querySelectorAll('[data-option-name="' + optionName + '"]').forEach(btn => {
               btn.classList.remove('active');
+              btn.setAttribute('aria-checked', 'false');
             });
             button.classList.add('active');
+            button.setAttribute('aria-checked', 'true');
             this.selectedVariants[optionName] = value;
           });
 
           if (valueIndex === 0) {
             button.classList.add('active');
+            button.setAttribute('aria-checked', 'true');
             this.selectedVariants[optionName] = value;
           }
 
@@ -211,16 +217,14 @@ class ProductGridModal {
         select.className = 'variant-group__select';
         select.dataset.optionName = optionName;
 
-        const placeholder = document.createElement('option');
-        placeholder.value = '';
-        placeholder.textContent = `Choose your ${optionName.toLowerCase()}`;
-        placeholder.selected = true;
-        select.appendChild(placeholder);
-
-        uniqueValues.forEach(value => {
+        uniqueValues.forEach((value, valueIndex) => {
           const option = document.createElement('option');
           option.value = value;
           option.textContent = value;
+          if (valueIndex === 0) {
+            option.selected = true;
+            this.selectedVariants[optionName] = value;
+          }
           select.appendChild(option);
         });
 
@@ -298,6 +302,31 @@ class ProductGridModal {
 
     const key = `option${optionIndex + 1}`;
     return variant[key] || '';
+  }
+
+  getOptionRole(optionName) {
+    const normalized = String(optionName || '').toLowerCase();
+    if (/(color|colour)/.test(normalized)) return 'color';
+    if (/size/.test(normalized)) return 'size';
+    return 'default';
+  }
+
+  getProductImageUrl(product) {
+    if (!product) return '';
+
+    if (typeof product.featured_image === 'string') {
+      return product.featured_image;
+    }
+
+    if (product.featured_image && typeof product.featured_image === 'object') {
+      return product.featured_image.src || product.featured_image.url || '';
+    }
+
+    if (Array.isArray(product.images) && product.images.length > 0) {
+      return product.images[0].src || product.images[0] || '';
+    }
+
+    return '';
   }
 
   shouldAddCrossSell() {
@@ -456,101 +485,6 @@ style.textContent = `
       opacity: 0;
       transform: translateY(-20px);
     }
-  }
-
-  /* Variant Group Styling */
-  .variant-group {
-    margin-bottom: 1.5rem;
-  }
-
-  .variant-group__label {
-    display: block;
-    font-family: 'Jost', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 130%;
-    color: #333333;
-    margin-bottom: 0.75rem;
-    text-transform: capitalize;
-  }
-
-  /* Color Options Styling */
-  .variant-group__color-options {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .variant-option--color {
-    position: relative;
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    padding-left: 1.25rem;
-    border: 1px solid #000000;
-    border-left: 5px solid #000000;
-    background-color: #FFFFFF;
-    font-family: 'Jost', sans-serif;
-    font-size: 18px;
-    font-weight: 400;
-    line-height: 100%;
-    letter-spacing: -2%;
-    color: #000000;
-    cursor: pointer;
-    text-transform: capitalize;
-    transition: all 0.3s ease;
-  }
-
-  .variant-option--color:hover {
-    background-color: #F5F5F5;
-  }
-
-  .variant-option--color.active {
-    background-color: #F5F5F5;
-    font-weight: 500;
-  }
-
-  /* Select Wrapper Styling */
-  .variant-group__select-wrapper {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-  }
-
-  .variant-group__select {
-    width: 100%;
-    padding: 0.75rem 2.5rem 0.75rem 1rem;
-    border: 1px solid #000000;
-    background-color: #FFFFFF;
-    font-family: 'Jost', sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 100%;
-    letter-spacing: -2%;
-    color: #000000;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-  }
-
-  .variant-group__select option {
-    font-family: 'Jost', sans-serif;
-    font-size: 16px;
-    color: #000000;
-  }
-
-  .variant-group__select-arrow {
-    position: absolute;
-    right: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    width: 12px;
-    height: 6px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 6'%3E%3Cpath stroke='%23000' stroke-width='1.5' fill='none' d='M1 1l5 4 5-4'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-size: contain;
   }
 `;
 document.head.appendChild(style);
