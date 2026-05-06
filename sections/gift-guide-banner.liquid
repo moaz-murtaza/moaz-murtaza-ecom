@@ -12,7 +12,6 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
-
 {%- endstyle -%}
 
 <section
@@ -27,7 +26,7 @@
     --gift-guide-banner-top-text-bottom: {{ section.settings.top_text_bottom | default: 0 }}px;
     --gift-guide-banner-top-button-top: {{ section.settings.top_button_top | default: 0 }}px;
     --gift-guide-banner-top-button-bottom: {{ section.settings.top_button_bottom | default: 0 }}px;
-    --gift-guide-banner-hero-content-top: {{ section.settings.hero_content_top | default: 72 }}px;
+    --gift-guide-banner-hero-content-top: {{ section.settings.hero_content_top | default: 70 }}px;
     --gift-guide-banner-hero-content-left: {{ section.settings.hero_content_left | default: 40 }}px;
     --gift-guide-banner-hero-content-max-width: {{ section.settings.hero_content_max_width | default: 460 }}px;
     --gift-guide-banner-hero-button-top: {{ section.settings.hero_button_top | default: 24 }}px;
@@ -44,6 +43,8 @@
     --gift-guide-banner-bottom-text-font-size: {{ section.settings.bottom_text_font_size | default: 12 }}px;
   "
 >
+  {%- assign bottom_text_mobile = section.settings.bottom_text_mobile | default: section.settings.bottom_text -%}
+
   <div class="gift-guide-banner__shell">
     <div class="gift-guide-banner__top-row">
       <div class="gift-guide-banner__logo-wrap">
@@ -81,6 +82,31 @@
       {%- endif -%}
     </div>
 
+    <template data-gift-guide-banner-drawer-template>
+      <div class="gift-guide-banner__drawer-block">
+        {%- if section.settings.top_text != blank -%}
+          <p class="gift-guide-banner__drawer-text">{{ section.settings.top_text | escape }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.top_button_text != blank -%}
+          {%- if section.settings.top_button_link != blank -%}
+            <a class="gift-guide-banner__drawer-button" href="{{ section.settings.top_button_link }}">
+          {%- else -%}
+            <div class="gift-guide-banner__drawer-button" role="presentation">
+          {%- endif -%}
+              <span class="gift-guide-banner__button-label">{{ section.settings.top_button_text | escape }}</span>
+              <svg class="gift-guide-banner__arrow" viewBox="0 0 20 16" aria-hidden="true" focusable="false">
+                <path d="M12 0L10.59 1.41L16.17 7H0V9H16.17L10.59 14.59L12 16L20 8L12 0Z" fill="currentColor"></path>
+              </svg>
+          {%- if section.settings.top_button_link != blank -%}
+            </a>
+          {%- else -%}
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    </template>
+
     <div class="gift-guide-banner__hero">
       {%- if section.settings.hero_image != blank -%}
         <img
@@ -111,6 +137,7 @@
             <div class="gift-guide-banner__overlay-button" role="presentation">
           {%- endif -%}
               <span class="gift-guide-banner__button-label">{{ section.settings.overlay_button_text | escape }}</span>
+              <span class="gift-guide-banner__button-line" aria-hidden="true"></span>
               <svg class="gift-guide-banner__arrow" viewBox="0 0 20 16" aria-hidden="true" focusable="false">
                 <path d="M12 0L10.59 1.41L16.17 7H0V9H16.17L10.59 14.59L12 16L20 8L12 0Z" fill="currentColor"></path>
               </svg>
@@ -123,8 +150,15 @@
       </div>
     </div>
 
-    {%- if section.settings.bottom_text != blank -%}
-      <div class="gift-guide-banner__bottom-text">{{ section.settings.bottom_text }}</div>
+    {%- if section.settings.bottom_text != blank or bottom_text_mobile != blank -%}
+      <div class="gift-guide-banner__bottom-text">
+        {%- if section.settings.bottom_text != blank -%}
+          <div class="gift-guide-banner__bottom-text-inner gift-guide-banner__bottom-text-inner--desktop">{{ section.settings.bottom_text }}</div>
+        {%- endif -%}
+        {%- if bottom_text_mobile != blank -%}
+          <div class="gift-guide-banner__bottom-text-inner gift-guide-banner__bottom-text-inner--mobile">{{ bottom_text_mobile }}</div>
+        {%- endif -%}
+      </div>
     {%- endif -%}
   </div>
 </section>
@@ -204,6 +238,12 @@
       "id": "bottom_text",
       "label": "Bottom text",
       "default": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "bottom_text_mobile",
+      "label": "Bottom text (mobile)",
+      "default": "SUSTAINABLE, ETHICALLY MADE ACTIVEWEAR"
     },
     {
       "type": "range",
@@ -359,11 +399,11 @@
       "type": "range",
       "id": "hero_content_top",
       "min": 0,
-      "max": 600,
-      "step": 6,
+      "max": 420,
+      "step": 5,
       "unit": "px",
       "label": "Banner content top offset",
-      "default": 72
+      "default": 70
     },
     {
       "type": "range",
