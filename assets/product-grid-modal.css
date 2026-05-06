@@ -267,7 +267,6 @@
 
 .variant-option--color:hover {
   background-color: #F5F5F5;
-  border-color: #000000;
 }
 
 .variant-option--color.active {
