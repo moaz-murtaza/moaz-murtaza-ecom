@@ -122,15 +122,20 @@
     </template>
 
     <div class="gift-guide-banner__hero">
-      {%- if section.settings.hero_image != blank -%}
-        <img
-          class="gift-guide-banner__hero-image"
-          src="{{ section.settings.hero_image | image_url: width: 2200 }}"
-          alt="{{ section.settings.hero_image_alt | escape }}"
-          width="{{ section.settings.hero_image.width }}"
-          height="{{ section.settings.hero_image.height }}"
-          loading="lazy"
-        >
+      {%- if section.settings.hero_image != blank or section.settings.hero_image_mobile != blank -%}
+        {%- assign desktop_image = section.settings.hero_image | default: section.settings.hero_image_mobile -%}
+        {%- assign mobile_image = section.settings.hero_image_mobile | default: section.settings.hero_image -%}
+        <picture>
+          <source media="(max-width: 749px)" srcset="{{ mobile_image | image_url: width: 1100 }}">
+          <img
+            class="gift-guide-banner__hero-image"
+            src="{{ desktop_image | image_url: width: 2200 }}"
+            alt="{{ section.settings.hero_image_alt | escape }}"
+            width="{{ desktop_image.width }}"
+            height="{{ desktop_image.height }}"
+            loading="lazy"
+          >
+        </picture>
       {%- else -%}
         {{ 'lifestyle-1' | placeholder_svg_tag: 'gift-guide-banner__hero-placeholder' }}
       {%- endif -%}
@@ -226,6 +231,11 @@
       "type": "image_picker",
       "id": "hero_image",
       "label": "Banner image"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image_mobile",
+      "label": "Banner image (mobile)"
     },
     {
       "type": "text",
