@@ -474,6 +474,10 @@
   opacity: 1;
 }
 
+.main-section{
+  padding: 50px;
+}
+
 /* Responsive */
 @media screen and (max-width: 768px) {
   .product-grid-modal__grid {
@@ -489,5 +493,8 @@
 
   .product-detail-modal__container {
     padding: 0;
+  }
+  .main-section{
+    padding: auto;
   }
 }
