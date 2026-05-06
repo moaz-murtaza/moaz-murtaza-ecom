@@ -167,7 +167,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.6rem;
-  align-items: start;
+  align-items: end;
 }
 
 .product-detail-modal__title {
