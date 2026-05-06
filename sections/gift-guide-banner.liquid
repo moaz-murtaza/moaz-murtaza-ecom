@@ -35,6 +35,13 @@
     --gift-guide-banner-bottom-text-top: {{ section.settings.bottom_text_top | default: 16 }}px;
     --gift-guide-banner-hero-min-height-desktop: {{ section.settings.hero_min_height_desktop | default: 780 }}px;
     --gift-guide-banner-hero-min-height-mobile: {{ section.settings.hero_min_height_mobile | default: 420 }}px;
+    --gift-guide-banner-logo-font-size: {{ section.settings.logo_font_size | default: 16 }}px;
+    --gift-guide-banner-top-text-font-size: {{ section.settings.top_text_font_size | default: 16 }}px;
+    --gift-guide-banner-top-button-font-size: {{ section.settings.top_button_font_size | default: 16 }}px;
+    --gift-guide-banner-overlay-title-font-size: {{ section.settings.overlay_title_font_size | default: 76 }}px;
+    --gift-guide-banner-overlay-description-font-size: {{ section.settings.overlay_description_font_size | default: 16 }}px;
+    --gift-guide-banner-overlay-button-font-size: {{ section.settings.overlay_button_font_size | default: 16 }}px;
+    --gift-guide-banner-bottom-text-font-size: {{ section.settings.bottom_text_font_size | default: 12 }}px;
   "
 >
   <div class="gift-guide-banner__shell">
@@ -197,6 +204,76 @@
       "id": "bottom_text",
       "label": "Bottom text",
       "default": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL"
+    },
+    {
+      "type": "range",
+      "id": "logo_font_size",
+      "min": 10,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "label": "Logo text size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "top_text_font_size",
+      "min": 10,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "label": "Top text size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "top_button_font_size",
+      "min": 10,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Choose Gift button text size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "overlay_title_font_size",
+      "min": 24,
+      "max": 140,
+      "step": 2,
+      "unit": "px",
+      "label": "Hero heading size",
+      "default": 76
+    },
+    {
+      "type": "range",
+      "id": "overlay_description_font_size",
+      "min": 10,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Hero description size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "overlay_button_font_size",
+      "min": 10,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Shop Now button text size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "bottom_text_font_size",
+      "min": 8,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Bottom text size",
+      "default": 12
     },
     {
       "type": "range",
