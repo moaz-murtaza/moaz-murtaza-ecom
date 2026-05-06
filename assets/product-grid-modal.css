@@ -208,7 +208,7 @@
 }
 
 .variant-group__label {
-  font-size: 0.84rem;
+  font-size: 14px;
   font-weight: 400;
   color: #000;
   text-transform: none;
@@ -284,7 +284,7 @@
   width: 100%;
   border: 1px solid #bdbdbd;
   background: #fff;
-  height: 2.2rem;
+  height: 40px;
   padding: 0 2.5rem 0 0.9rem;
   font-size: 1rem;
   appearance: none;
