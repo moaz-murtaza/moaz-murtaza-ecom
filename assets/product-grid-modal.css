@@ -246,11 +246,6 @@
   border-color: #8e8e8e;
 }
 
-.variant-option.active {
-  border-color: #2f6ea6;
-  box-shadow: inset 2px 0 0 #2f6ea6;
-}
-
 /* Color variant styling with left border */
 .variant-option--color {
   display: flex;
