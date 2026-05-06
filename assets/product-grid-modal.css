@@ -95,11 +95,11 @@
 
 .product-detail-modal__content {
   position: relative;
-  background-color: #fff;
-  border: 1px solid #d6d6d6;
-  max-width: 350px;
-  width: min(94vw, 350px);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+  border: 0;
+  width: min(311px, calc(100vw - 2rem));
+  height: 447px;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.2);
   animation: slideUp 0.2s ease-out;
 }
 
@@ -116,10 +116,10 @@
 
 .product-detail-modal__close {
   position: absolute;
-  top: 0.6rem;
-  right: 0.6rem;
-  width: 1.4rem;
-  height: 1.4rem;
+  top: 12px;
+  right: 12px;
+  width: 17px;
+  height: 17px;
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -136,13 +136,15 @@
 }
 
 .product-detail-modal__container {
-  display: block;
-  padding: 0.9rem;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0;
 }
 
 .product-detail-modal__image-section {
+  width: 120px;
   height: 140px;
-  flex: 0 0 4.2rem;
   background-color: #f3f3f3;
   border-radius: 0;
   min-height: 0;
@@ -160,59 +162,83 @@
 .product-detail-modal__details-section {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0;
+  padding-top: 13px;
 }
 
 .product-detail-modal__top {
+  margin: 36px 20px 0 17px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.6rem;
-  align-items: end;
+  grid-template-columns: 120px 1fr;
+  column-gap: 8px;
+  align-items: start;
 }
 
 .product-detail-modal__title {
-  font-size: 16px;
-  font-weight: 400;
   margin: 0;
-  color: #000;
-  line-height: 1.2;
+  color: #000000;
+  font-family: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  font-style: normal;
+  line-height: 120%;
 }
 
 .product-detail-modal__price {
+  margin: 20px 0 0;
+  color: #000000;
+  font-family: 'Lustria', serif;
   font-size: 16px;
   font-weight: 400;
-  margin: 0.2rem 0 0;
-  color: #000;
+  font-style: normal;
+  line-height: 120%;
+}
+
+.product-detail-modal__price .price,
+.product-detail-modal__price .price-compare {
+  font-family: 'Lustria', serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 120%;
+  color: #000000;
 }
 
 .product-detail-modal__description {
-  font-size: 14px;
-  line-height: 1.3;
+  margin: 12px 0 0;
   color: #000000;
-  margin: 0.4rem 0 0;
-  max-height: 3.8em;
+  font-family: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  font-style: normal;
+  line-height: 110%;
+  letter-spacing: -0.01em;
+  max-height: 60px;
   overflow: hidden;
 }
 
 .product-detail-modal__variants {
+  width: 271px;
+  margin: 10px 0 0 20px;
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
-  margin-top: 0.55rem;
+  gap: 12px;
 }
 
 .variant-group {
+  width: 271px;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 6px;
 }
 
 .variant-group__label {
+  margin: 0;
+  color: #333333;
+  font-family: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #000;
-  text-transform: none;
-  letter-spacing: 0;
+  font-style: normal;
+  line-height: 130%;
 }
 
 .variant-group__options {
@@ -222,10 +248,11 @@
 }
 
 .variant-group__color-options {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  width: 100%;
+  width: 271px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  border: 0.5px solid #000000;
 }
 
 .variant-option {
@@ -244,62 +271,90 @@
 
 /* Color variant styling with left border */
 .variant-option--color {
+  height: 40.44px;
   display: flex;
   align-items: center;
-  min-width: auto;
-  flex: 1;
-  min-width: 80px;
-  padding: 0.75rem 1rem;
-  padding-left: 1.25rem;
-  border: 1px solid #000000;
-  border-left: 4px solid var(--variant-color, #000000);
-  background-color: #FFFFFF;
-  font-family: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 1.75rem;
-  font-weight: 400;
-  line-height: 100%;
-  letter-spacing: -2%;
+  justify-content: flex-start;
+  padding: 0 12px 0 15px;
+  border: 0;
+  border-left: 5px solid var(--variant-color, #000000);
+  background-color: #ffffff;
   color: #000000;
   cursor: pointer;
+  font-family: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 100%;
+  letter-spacing: -0.02em;
   text-transform: capitalize;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition: background-color 0.2s ease;
+}
+
+.variant-option--color:nth-child(odd) {
+  border-right: 0.5px solid #000000;
+}
+
+.variant-option--color:nth-child(n + 3) {
+  border-top: 0.5px solid #000000;
 }
 
 .variant-option--color:hover {
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
 }
 
 .variant-option--color.active {
-  background-color: #000000;
-  color: white;
-  font-weight: 500;
-  box-shadow: none;
+  background-color: #f5f5f5;
 }
 
 .variant-group__select-wrapper {
   position: relative;
+  width: 271px;
+  height: 40.44px;
+  border: 0.5px solid #000000;
+  background-color: #ffffff;
+}
+
+.variant-group__select-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 55px;
+  width: 0;
+  border-right: 0.5px solid #000000;
+  pointer-events: none;
 }
 
 .variant-group__select {
   width: 100%;
-  border: 1px solid #bdbdbd;
-  background: #fff;
-  height: 40px;
-  padding: 0 2.5rem 0 0.9rem;
-  font-size: 1rem;
+  height: 40.44px;
+  border: 0;
+  background: transparent;
+  padding: 0 55px 0 13px;
+  color: #000000;
+  font-family: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 100%;
+  letter-spacing: -0.02em;
   appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 .variant-group__select-arrow {
   position: absolute;
-  right: 0.9rem;
+  right: 21px;
   top: 50%;
-  width: 0.45rem;
-  height: 0.45rem;
-  border-right: 1px solid #000;
-  border-bottom: 1px solid #000;
-  transform: translateY(-65%) rotate(45deg);
+  width: 12px;
+  height: 6px;
+  transform: translateY(-50%);
   pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: 12px 6px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='6' viewBox='0 0 12 6'%3E%3Cpath d='M1 1L6 5L11 1' stroke='%23000' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 
 .variant-option:disabled {
@@ -308,37 +363,36 @@
 }
 
 .product-detail-modal__add-to-cart {
-  width: 100%;
-  height: 2.9rem;
-  padding: 0 1rem;
-  margin-top: 0.85rem;
-  background-color: #000;
-  color: #fff;
-  border: 1px solid #000;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  width: 271px;
+  height: 45px;
+  margin: 51px 0 0 20px;
+  padding: 0;
+  background-color: #000000;
+  border: 0;
+  color: #ffffff;
   cursor: pointer;
-  transition: opacity 0.2s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.55rem;
-  font-size: 0.78rem;
+  gap: 18px;
+  font-family: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 20.48px;
+  letter-spacing: 0;
+  text-transform: uppercase;
 }
+
+.product-detail-modal__button-line {
+  width: 33.7px;
+  height: 0;
+  border-top: 1.5px solid #ffffff;
+}
+
 
 .product-detail-modal__add-to-cart:hover {
-  opacity: 0.9;
-}
-
-.product-detail-modal__add-to-cart .button-arrow {
-  width: 1.25rem;
-  height: 1rem;
-  transition: transform 0.3s ease;
-}
-
-.product-detail-modal__add-to-cart:hover .button-arrow {
-  transform: translateX(0.5rem);
+  opacity: 1;
 }
 
 /* Responsive */
@@ -354,6 +408,6 @@
   }
 
   .product-detail-modal__container {
-    padding: 1rem;
+    padding: 0;
   }
 }
