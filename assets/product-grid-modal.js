@@ -2,6 +2,7 @@ class ProductGridModal {
   constructor() {
     this.currentProduct = null;
     this.selectedVariants = {};
+    this.activeDropdown = null;
     this.init();
   }
 
@@ -57,10 +58,22 @@ class ProductGridModal {
         this.addToCart(modal);
       });
     });
+
+    // Global click: close any open dropdown
+    document.addEventListener('click', (e) => {
+      if (!this.activeDropdown) return;
+      if (e.target.closest('.variant-dropdown')) return;
+      this.closeDropdown(this.activeDropdown);
+    });
+
+    // Escape closes dropdown
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      if (this.activeDropdown) this.closeDropdown(this.activeDropdown);
+    });
   }
 
   async openProductModal(productItem) {
-    const productId = productItem.dataset.productId;
     const productHandle = productItem.dataset.productHandle;
 
     try {
@@ -186,6 +199,11 @@ class ProductGridModal {
         optionsContainer.setAttribute('role', 'radiogroup');
         optionsContainer.setAttribute('aria-label', optionName);
 
+        const indicator = document.createElement('div');
+        indicator.className = 'variant-group__color-indicator';
+        indicator.setAttribute('aria-hidden', 'true');
+        optionsContainer.appendChild(indicator);
+
         uniqueValues.forEach((value) => {
           const button = document.createElement('button');
           button.className = 'variant-option variant-option--color';
@@ -210,6 +228,8 @@ class ProductGridModal {
             button.classList.add('active');
             button.setAttribute('aria-checked', 'true');
             this.selectedVariants[optionName] = value;
+
+            this.updateColorIndicator(optionsContainer, button);
           });
 
           optionsContainer.appendChild(button);
@@ -217,41 +237,67 @@ class ProductGridModal {
 
         group.appendChild(optionsContainer);
       } else {
-        const selectWrapper = document.createElement('div');
-        selectWrapper.className = 'variant-group__select-wrapper';
+        const dropdown = document.createElement('div');
+        dropdown.className = 'variant-dropdown';
+        dropdown.dataset.optionName = optionName;
 
-        const select = document.createElement('select');
-        select.className = 'variant-group__select';
-        select.dataset.optionName = optionName;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'variant-dropdown__button';
+        button.setAttribute('aria-haspopup', 'listbox');
+        button.setAttribute('aria-expanded', 'false');
 
-        // Placeholder option (Figma: “Choose your size”)
-        const placeholder = document.createElement('option');
-        placeholder.value = '';
-        placeholder.selected = true;
-        placeholder.disabled = true;
-        placeholder.textContent = optionRole === 'size'
+        const buttonText = document.createElement('span');
+        buttonText.className = 'variant-dropdown__text';
+        buttonText.textContent = optionRole === 'size'
           ? 'Choose your size'
           : `Choose your ${String(optionName).toLowerCase()}`;
-        select.appendChild(placeholder);
-
-        uniqueValues.forEach((value) => {
-          const option = document.createElement('option');
-          option.value = value;
-          option.textContent = value;
-          select.appendChild(option);
-        });
-
-        select.addEventListener('change', () => {
-          this.selectedVariants[optionName] = select.value;
-        });
 
         const arrow = document.createElement('span');
-        arrow.className = 'variant-group__select-arrow';
+        arrow.className = 'variant-dropdown__arrow';
         arrow.setAttribute('aria-hidden', 'true');
 
-        selectWrapper.appendChild(select);
-        selectWrapper.appendChild(arrow);
-        group.appendChild(selectWrapper);
+        button.appendChild(buttonText);
+        button.appendChild(arrow);
+
+        const list = document.createElement('div');
+        list.className = 'variant-dropdown__list';
+        list.setAttribute('role', 'listbox');
+        list.hidden = true;
+
+        uniqueValues.forEach((value) => {
+          const opt = document.createElement('button');
+          opt.type = 'button';
+          opt.className = 'variant-dropdown__option';
+          opt.setAttribute('role', 'option');
+          opt.dataset.value = value;
+          opt.textContent = value;
+
+          opt.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.selectedVariants[optionName] = value;
+            buttonText.textContent = value;
+            this.closeDropdown(dropdown);
+          });
+
+          list.appendChild(opt);
+        });
+
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (dropdown.classList.contains('is-open')) {
+            this.closeDropdown(dropdown);
+          } else {
+            if (this.activeDropdown && this.activeDropdown !== dropdown) {
+              this.closeDropdown(this.activeDropdown);
+            }
+            this.openDropdown(dropdown);
+          }
+        });
+
+        dropdown.appendChild(button);
+        dropdown.appendChild(list);
+        group.appendChild(dropdown);
       }
 
       variantsContainer.appendChild(group);
@@ -438,6 +484,50 @@ class ProductGridModal {
     // Reset selected variants
     this.selectedVariants = {};
     this.currentProduct = null;
+
+    if (this.activeDropdown) {
+      this.closeDropdown(this.activeDropdown);
+    }
+  }
+
+  openDropdown(dropdown) {
+    const list = dropdown.querySelector('.variant-dropdown__list');
+    const button = dropdown.querySelector('.variant-dropdown__button');
+    if (!list || !button) return;
+
+    dropdown.classList.add('is-open');
+    list.hidden = false;
+    button.setAttribute('aria-expanded', 'true');
+    this.activeDropdown = dropdown;
+  }
+
+  closeDropdown(dropdown) {
+    const list = dropdown.querySelector('.variant-dropdown__list');
+    const button = dropdown.querySelector('.variant-dropdown__button');
+    if (!list || !button) return;
+
+    dropdown.classList.remove('is-open');
+    list.hidden = true;
+    button.setAttribute('aria-expanded', 'false');
+
+    if (this.activeDropdown === dropdown) {
+      this.activeDropdown = null;
+    }
+  }
+
+  updateColorIndicator(container, activeButton) {
+    const indicator = container.querySelector('.variant-group__color-indicator');
+    if (!indicator || !activeButton) return;
+
+    const x = activeButton.offsetLeft;
+    const y = activeButton.offsetTop;
+    const w = activeButton.offsetWidth;
+    const h = activeButton.offsetHeight;
+
+    indicator.style.width = `${w}px`;
+    indicator.style.height = `${h}px`;
+    indicator.style.transform = `translate(${x}px, ${y}px)`;
+    indicator.style.opacity = '1';
   }
 
   formatPrice(price) {

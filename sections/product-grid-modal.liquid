@@ -12,6 +12,11 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  .product-grid-modal[data-section-id="{{ section.id }}"] {
+    --product-grid-modal-open-icon-top: {{ section.settings.open_icon_top | default: 50 }};
+    --product-grid-modal-open-icon-right: {{ section.settings.open_icon_right | default: 3 }};
+  }
 {%- endstyle -%}
 
 <section class="product-grid-modal color-{{ section.settings.color_scheme }} section-{{ section.id }}-padding" data-section-id="{{ section.id }}">
@@ -160,6 +165,26 @@
           "label": "Background-3"
         }
       ]
+    },
+    {
+      "type": "range",
+      "id": "open_icon_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Open icon top position",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "open_icon_right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Open icon right position",
+      "default": 3
     },
     {
       "type": "range",
