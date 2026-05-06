@@ -281,6 +281,7 @@
 
 .variant-option--color.active {
   background-color: #00000;
+  color: white;
   font-weight: 500;
   box-shadow: none;
 }
