@@ -4,6 +4,8 @@ class ProductGridModal {
     this.selectedVariants = {};
     this.activeDropdown = null;
     this.crossSellVariantCache = new Map();
+    // Soft Winter Jacket cross-sell variant id (provided by you)
+    this.crossSellVariantId = 10206039474471;
     this.init();
   }
 
@@ -342,10 +344,15 @@ class ProductGridModal {
     ];
 
     // Cross-sell logic: If Black and Medium variants are selected, also add "Soft Winter Jacket"
-    // Handle provided by you: dark-winter-jacket
+    // Variant id provided by you: 10206039474471
+    // Handle fallback: dark-winter-jacket
     if (this.shouldAddCrossSell()) {
       try {
-        const crossSellVariantId = await this.getFirstAvailableVariantIdByHandle('dark-winter-jacket');
+        const configuredId = Number(this.crossSellVariantId);
+        const crossSellVariantId = Number.isFinite(configuredId) && configuredId > 0
+          ? configuredId
+          : await this.getFirstAvailableVariantIdByHandle('dark-winter-jacket');
+
         if (crossSellVariantId) {
           cartItems.push({
             id: crossSellVariantId,
