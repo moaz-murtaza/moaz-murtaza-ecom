@@ -1,5 +1,24 @@
 {{ 'gift-guide-banner.css' | asset_url | stylesheet_tag }}
 
+{%- liquid
+  assign top_row_gap = section.settings.top_row_gap | default: 24
+  assign top_row_padding_x = section.settings.top_row_padding_x | default: 50
+  assign top_row_padding_y = section.settings.top_row_padding_y | default: 10
+  assign top_logo_width = section.settings.top_logo_width | default: 152
+  assign top_text_top = section.settings.top_text_top | default: 0
+  assign top_text_bottom = section.settings.top_text_bottom | default: 0
+  assign top_button_top = section.settings.top_button_top | default: 0
+  assign top_button_bottom = section.settings.top_button_bottom | default: 0
+  assign hero_content_top = section.settings.hero_content_top | default: 72
+  assign hero_content_left = section.settings.hero_content_left | default: 40
+  assign hero_content_max_width = section.settings.hero_content_max_width | default: 460
+  assign hero_button_top = section.settings.hero_button_top | default: 24
+  assign hero_button_bottom = section.settings.hero_button_bottom | default: 0
+  assign bottom_text_top = section.settings.bottom_text_top | default: 16
+  assign hero_min_height_desktop = section.settings.hero_min_height_desktop | default: 780
+  assign hero_min_height_mobile = section.settings.hero_min_height_mobile | default: 420
+-%}
+
 {%- style -%}
   .section-{{ section.id }}-padding {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
@@ -12,68 +31,110 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  .gift-guide-banner.section-{{ section.id }} {
+    --gift-guide-top-row-gap: {{ top_row_gap }}px;
+    --gift-guide-top-row-padding-x: {{ top_row_padding_x }}px;
+    --gift-guide-top-row-padding-y: {{ top_row_padding_y }}px;
+    --gift-guide-top-logo-width: {{ top_logo_width }}px;
+    --gift-guide-top-text-top: {{ top_text_top }}px;
+    --gift-guide-top-text-bottom: {{ top_text_bottom }}px;
+    --gift-guide-top-button-top: {{ top_button_top }}px;
+    --gift-guide-top-button-bottom: {{ top_button_bottom }}px;
+    --gift-guide-hero-content-top: {{ hero_content_top }}px;
+    --gift-guide-hero-content-left: {{ hero_content_left }}px;
+    --gift-guide-hero-content-max-width: {{ hero_content_max_width }}px;
+    --gift-guide-hero-button-top: {{ hero_button_top }}px;
+    --gift-guide-hero-button-bottom: {{ hero_button_bottom }}px;
+    --gift-guide-bottom-text-top: {{ bottom_text_top }}px;
+    --gift-guide-hero-min-height-desktop: {{ hero_min_height_desktop }}px;
+    --gift-guide-hero-min-height-mobile: {{ hero_min_height_mobile }}px;
+  }
 {%- endstyle -%}
 
-<section class="gift-guide-banner color-{{ section.settings.color_scheme }} section-{{ section.id }}-padding">
-  <div class="page-width">
-    <div class="gift-guide-banner__content">
-      {%- if section.settings.logo_image -%}
-        <div class="gift-guide-banner__logo">
-          <img 
-            src="{{ section.settings.logo_image | image_url: width: 300 }}" 
-            alt="{{ section.settings.logo_text }}"
-            width="150"
-            height="auto"
+<section class="gift-guide-banner color-{{ section.settings.color_scheme }} section-{{ section.id }}-padding" data-gift-guide-banner="{{ section.id }}">
+  <div class="gift-guide-banner__shell">
+    <div class="gift-guide-banner__top-row">
+      <div class="gift-guide-banner__logo-wrap">
+        {%- if section.settings.logo_image != blank -%}
+          <img
+            class="gift-guide-banner__logo-image"
+            src="{{ section.settings.logo_image | image_url: width: 320 }}"
+            alt="{{ section.settings.logo_alt | escape }}"
+            width="{{ section.settings.logo_image.width }}"
+            height="{{ section.settings.logo_image.height }}"
+            loading="lazy"
           >
+        {%- else -%}
+          <span class="gift-guide-banner__logo-text">{{ section.settings.logo_alt | escape }}</span>
+        {%- endif -%}
+      </div>
+
+      <div class="gift-guide-banner__top-text-wrap">
+        <p class="gift-guide-banner__top-text">{{ section.settings.top_text | escape }}</p>
+      </div>
+
+      {%- if section.settings.top_button_link != blank -%}
+        <a class="gift-guide-banner__top-button" href="{{ section.settings.top_button_link }}">
+      {%- else -%}
+        <div class="gift-guide-banner__top-button" role="presentation">
+      {%- endif -%}
+          <span class="gift-guide-banner__button-label">{{ section.settings.top_button_text | escape }}</span>
+          <svg class="gift-guide-banner__arrow" viewBox="0 0 20 16" aria-hidden="true" focusable="false">
+            <path d="M12 0L10.59 1.41L16.17 7H0V9H16.17L10.59 14.59L12 16L20 8L12 0Z" fill="currentColor"></path>
+          </svg>
+      {%- if section.settings.top_button_link != blank -%}
+        </a>
+      {%- else -%}
         </div>
       {%- endif -%}
+    </div>
 
-      <div class="gift-guide-banner__text-section">
-        <h2 class="gift-guide-banner__title h2">
-          {{ section.settings.banner_text }}
-        </h2>
+    <div class="gift-guide-banner__hero">
+      {%- if section.settings.hero_image != blank -%}
+        <img
+          class="gift-guide-banner__hero-image"
+          src="{{ section.settings.hero_image | image_url: width: 2200 }}"
+          alt="{{ section.settings.hero_image_alt | escape }}"
+          width="{{ section.settings.hero_image.width }}"
+          height="{{ section.settings.hero_image.height }}"
+          loading="lazy"
+        >
+      {%- else -%}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'gift-guide-banner__hero-placeholder' }}
+      {%- endif -%}
 
-        <div class="gift-guide-banner__buttons">
-          <a 
-            href="#" 
-            class="button button-primary gift-guide-banner__button"
-            data-button-text="{{ section.settings.button_1_text }}"
-          >
-            <span>{{ section.settings.button_1_text }}</span>
-            <svg class="button-arrow" width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 0L10.59 1.41L16.17 7H0V9H16.17L10.59 14.59L12 16L20 8L12 0Z" fill="currentColor"/>
-            </svg>
-          </a>
+      <div class="gift-guide-banner__overlay">
+        <div class="gift-guide-banner__overlay-content">
+          {%- if section.settings.overlay_title != blank -%}
+            <h2 class="gift-guide-banner__overlay-title">{{ section.settings.overlay_title | escape }}</h2>
+          {%- endif -%}
+
+          {%- if section.settings.overlay_description != blank -%}
+            <div class="gift-guide-banner__overlay-description">{{ section.settings.overlay_description }}</div>
+          {%- endif -%}
+
+          {%- if section.settings.overlay_button_link != blank -%}
+            <a class="gift-guide-banner__overlay-button" href="{{ section.settings.overlay_button_link }}">
+          {%- else -%}
+            <div class="gift-guide-banner__overlay-button" role="presentation">
+          {%- endif -%}
+              <span class="gift-guide-banner__button-label">{{ section.settings.overlay_button_text | escape }}</span>
+              <svg class="gift-guide-banner__arrow" viewBox="0 0 20 16" aria-hidden="true" focusable="false">
+                <path d="M12 0L10.59 1.41L16.17 7H0V9H16.17L10.59 14.59L12 16L20 8L12 0Z" fill="currentColor"></path>
+              </svg>
+          {%- if section.settings.overlay_button_link != blank -%}
+            </a>
+          {%- else -%}
+            </div>
+          {%- endif -%}
         </div>
-      </div>
-
-      <div class="gift-guide-banner__secondary">
-        <div class="gift-guide-banner__secondary-content">
-          <h3 class="gift-guide-banner__secondary-title h2">
-            {{ section.settings.secondary_title }}
-          </h3>
-
-          <p class="gift-guide-banner__secondary-text body-text">
-            {{ section.settings.secondary_description }}
-          </p>
-
-          <a 
-            href="#" 
-            class="button button-secondary gift-guide-banner__button"
-            data-button-text="{{ section.settings.button_2_text }}"
-          >
-            <span>{{ section.settings.button_2_text }}</span>
-            <svg class="button-arrow" width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 0L10.59 1.41L16.17 7H0V9H16.17L10.59 14.59L12 16L20 8L12 0Z" fill="currentColor"/>
-            </svg>
-          </a>
-        </div>
-      </div>
-
-      <div class="gift-guide-banner__message">
-        {{ section.settings.banner_message }}
       </div>
     </div>
+
+    {%- if section.settings.bottom_text != blank -%}
+      <div class="gift-guide-banner__bottom-text">{{ section.settings.bottom_text }}</div>
+    {%- endif -%}
   </div>
 </section>
 
@@ -88,49 +149,230 @@
     {
       "type": "image_picker",
       "id": "logo_image",
-      "label": "Logo Image"
+      "label": "Top logo image"
     },
     {
       "type": "text",
-      "id": "logo_text",
-      "label": "Logo Alt Text",
-      "default": "Tisso Vison"
+      "id": "logo_alt",
+      "label": "Top logo text",
+      "default": "TISSO VISON"
     },
     {
-      "type": "textarea",
-      "id": "banner_text",
-      "label": "Banner Text",
+      "type": "text",
+      "id": "top_text",
+      "label": "Top center text",
       "default": "Find the ideal gift for your loved ones."
     },
     {
       "type": "text",
-      "id": "button_1_text",
-      "label": "Button 1 Text",
+      "id": "top_button_text",
+      "label": "Top button text",
       "default": "CHOOSE GIFT"
     },
     {
-      "type": "textarea",
-      "id": "secondary_title",
-      "label": "Secondary Section Title",
+      "type": "url",
+      "id": "top_button_link",
+      "label": "Top button link"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Banner image"
+    },
+    {
+      "type": "text",
+      "id": "hero_image_alt",
+      "label": "Banner image alt text",
+      "default": "Gift guide banner image"
+    },
+    {
+      "type": "text",
+      "id": "overlay_title",
+      "label": "Banner heading",
       "default": "The Gift Guide"
     },
     {
       "type": "textarea",
-      "id": "secondary_description",
-      "label": "Secondary Section Description",
+      "id": "overlay_description",
+      "label": "Banner description",
       "default": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season."
     },
     {
       "type": "text",
-      "id": "button_2_text",
-      "label": "Button 2 Text",
+      "id": "overlay_button_text",
+      "label": "Banner button text",
       "default": "SHOP NOW"
     },
     {
-      "type": "textarea",
-      "id": "banner_message",
-      "label": "Bottom Banner Message",
+      "type": "url",
+      "id": "overlay_button_link",
+      "label": "Banner button link"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "bottom_text",
+      "label": "Bottom text",
       "default": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL"
+    },
+    {
+      "type": "range",
+      "id": "top_row_gap",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Top row gap",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "top_row_padding_x",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Top row side padding",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "top_row_padding_y",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Top row vertical padding",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "top_logo_width",
+      "min": 80,
+      "max": 260,
+      "step": 2,
+      "unit": "px",
+      "label": "Top logo width",
+      "default": 152
+    },
+    {
+      "type": "range",
+      "id": "top_text_top",
+      "min": -40,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Top text margin top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "top_text_bottom",
+      "min": -40,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Top text margin bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "top_button_top",
+      "min": -40,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Top button margin top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "top_button_bottom",
+      "min": -40,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Top button margin bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "hero_content_top",
+      "min": 0,
+      "max": 420,
+      "step": 4,
+      "unit": "px",
+      "label": "Banner content top offset",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "hero_content_left",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Banner content left offset",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "hero_content_max_width",
+      "min": 260,
+      "max": 700,
+      "step": 10,
+      "unit": "px",
+      "label": "Banner content width",
+      "default": 460
+    },
+    {
+      "type": "range",
+      "id": "hero_button_top",
+      "min": -20,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Banner button margin top",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "hero_button_bottom",
+      "min": -20,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Banner button margin bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "bottom_text_top",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Bottom text margin top",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "hero_min_height_desktop",
+      "min": 420,
+      "max": 1100,
+      "step": 10,
+      "unit": "px",
+      "label": "Banner image height desktop",
+      "default": 780
+    },
+    {
+      "type": "range",
+      "id": "hero_min_height_mobile",
+      "min": 240,
+      "max": 700,
+      "step": 10,
+      "unit": "px",
+      "label": "Banner image height mobile",
+      "default": 420
     },
     {
       "type": "select",
@@ -159,7 +401,7 @@
       "max": 100,
       "step": 4,
       "unit": "px",
-      "label": "Padding top",
+      "label": "Section padding top",
       "default": 36
     },
     {
@@ -169,8 +411,13 @@
       "max": 100,
       "step": 4,
       "unit": "px",
-      "label": "Padding bottom",
+      "label": "Section padding bottom",
       "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Gift Guide Banner"
     }
   ]
 }

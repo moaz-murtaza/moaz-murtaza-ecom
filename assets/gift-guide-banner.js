@@ -1,32 +1,20 @@
-class GiftGuideBanner {
-  constructor() {
-    this.init();
-  }
+(() => {
+  const initGiftGuideBanner = () => {
+    document.querySelectorAll('[data-gift-guide-banner]').forEach((section) => {
+      if (section.dataset.giftGuideLoaded === 'true') {
+        return;
+      }
 
-  init() {
-    const buttons = document.querySelectorAll('.gift-guide-banner__button');
-    buttons.forEach(button => {
-      button.addEventListener('mouseenter', this.animateButton.bind(this));
+      section.dataset.giftGuideLoaded = 'true';
+      requestAnimationFrame(() => {
+        section.classList.add('gift-guide-banner--loaded');
+      });
     });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGiftGuideBanner, { once: true });
+  } else {
+    initGiftGuideBanner();
   }
-
-  animateButton(event) {
-    const button = event.target.closest('.gift-guide-banner__button');
-    if (!button) return;
-
-    // Add animation class
-    button.style.animation = 'none';
-    setTimeout(() => {
-      button.style.animation = '';
-    }, 10);
-  }
-}
-
-// Initialize when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    new GiftGuideBanner();
-  });
-} else {
-  new GiftGuideBanner();
-}
+})();
