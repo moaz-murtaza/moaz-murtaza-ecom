@@ -335,38 +335,53 @@ class ProductGridModal {
       return;
     }
 
-    // Prepare cart items array
-    const cartItems = [
-      {
-        id: selectedVariant.id,
-        quantity: 1
-      }
-    ];
+    const addToCartButton = modal ? modal.querySelector('[data-modal-add-to-cart]') : null;
+    if (addToCartButton) addToCartButton.disabled = true;
 
-    // Cross-sell logic: If Black and Medium variants are selected, also add "Soft Winter Jacket"
-    // Variant id provided by you: 10206039474471
-    // Handle fallback: dark-winter-jacket
-    if (this.shouldAddCrossSell()) {
-      try {
-        const configuredId = Number(this.crossSellVariantId);
-        const crossSellVariantId = Number.isFinite(configuredId) && configuredId > 0
-          ? configuredId
-          : await this.getFirstAvailableVariantIdByHandle('dark-winter-jacket');
-
-        if (crossSellVariantId) {
-          cartItems.push({
-            id: crossSellVariantId,
-            quantity: 1
-          });
+    try {
+      // 1) Always add the main selected variant first.
+      await this.addItemsToCart([
+        {
+          id: selectedVariant.id,
+          quantity: 1
         }
-      } catch (error) {
-        // If cross-sell fails, still add the main item.
-        console.error('Cross-sell add failed:', error);
-      }
-    }
+      ]);
 
-    // Add to cart
-    this.addItemsToCart(cartItems, modal);
+      // 2) Optionally add cross-sell as a second request so it can't block the main item.
+      let addedCount = 1;
+      if (this.shouldAddCrossSell()) {
+        try {
+          const configuredId = Number(this.crossSellVariantId);
+          const crossSellVariantId = Number.isFinite(configuredId) && configuredId > 0
+            ? configuredId
+            : await this.getFirstAvailableVariantIdByHandle('dark-winter-jacket');
+
+          if (crossSellVariantId) {
+            await this.addItemsToCart(
+              [
+                {
+                  id: crossSellVariantId,
+                  quantity: 1
+                }
+              ],
+              { suppressAlert: true }
+            );
+            addedCount += 1;
+          }
+        } catch (error) {
+          // If cross-sell fails, still treat the main add as success.
+          console.error('Cross-sell add failed:', error);
+        }
+      }
+
+      this.closeModal(modal || document.querySelector('.product-detail-modal.active'));
+      this.showCartNotification(addedCount);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      alert(error && error.message ? error.message : 'Error adding item to cart. Please try again.');
+    } finally {
+      if (addToCartButton) addToCartButton.disabled = false;
+    }
   }
 
   getVariantOptionValue(variant, optionIndex) {
@@ -410,7 +425,7 @@ class ProductGridModal {
       .map(v => String(v || '').trim().toLowerCase())
       .filter(Boolean);
     const hasBlack = values.includes('black');
-    const hasMedium = values.includes('m');
+    const hasMedium = values.includes('medium') || values.includes('m') || values.includes('med');
     return hasBlack && hasMedium;
   }
 
@@ -442,36 +457,38 @@ class ProductGridModal {
     return variantId;
   }
 
-  async addItemsToCart(items, modal) {
-    try {
-      const response = await fetch('/cart/add.js', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          items: items
-        })
-      });
+  async addItemsToCart(items, { suppressAlert = false } = {}) {
+    const response = await fetch('/cart/add.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ items })
+    });
 
-      if (!response.ok) {
-        throw new Error('Failed to add to cart');
+    const bodyText = await response.text();
+    let bodyJson = null;
+    try {
+      bodyJson = bodyText ? JSON.parse(bodyText) : null;
+    } catch {
+      bodyJson = null;
+    }
+
+    if (!response.ok) {
+      const message =
+        (bodyJson && (bodyJson.description || bodyJson.message)) ||
+        bodyText ||
+        `Failed to add to cart (${response.status})`;
+
+      if (!suppressAlert) {
+        // Let the caller decide whether to alert; we throw either way.
+        // (Some callers may want a silent failure, e.g., cross-sell.)
       }
 
-      const cart = await response.json();
-      
-      // Close modal
-      this.closeModal(modal || document.querySelector('.product-detail-modal.active'));
-
-      // Show success message
-      this.showCartNotification(items.length);
-
-      // Optionally redirect to cart or update cart UI
-      // window.location.href = '/cart';
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      alert('Error adding item to cart. Please try again.');
+      throw new Error(message);
     }
+
+    return bodyJson;
   }
 
   showCartNotification(itemCount) {
