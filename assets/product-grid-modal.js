@@ -49,13 +49,14 @@ class ProductGridModal {
     });
 
     // Add to cart button handler
-    const addToCartBtn = document.getElementById('modalAddToCart');
-    if (addToCartBtn) {
+    const addToCartButtons = document.querySelectorAll('[data-modal-add-to-cart]');
+    addToCartButtons.forEach(addToCartBtn => {
       addToCartBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        this.addToCart();
+        const modal = addToCartBtn.closest('.product-detail-modal');
+        this.addToCart(modal);
       });
-    }
+    });
   }
 
   async openProductModal(productItem) {
@@ -70,8 +71,12 @@ class ProductGridModal {
       this.currentProduct = productData;
       this.selectedVariants = {};
       
-      // Get the modal (use the first one or the one in the same section)
-      const modal = document.querySelector('.product-detail-modal');
+      // Get modal in the same section
+      const section = productItem.closest('[data-section-id]');
+      const sectionId = section ? section.dataset.sectionId : null;
+      const modal = sectionId
+        ? document.querySelector(`.product-detail-modal[data-modal-id="${sectionId}"]`)
+        : document.querySelector('.product-detail-modal');
       if (!modal) {
         console.error('Modal not found');
         return;
@@ -100,20 +105,20 @@ class ProductGridModal {
     const product = productData.product;
 
     // Update image
-    const image = modal.querySelector('#modalProductImage');
+    const image = modal.querySelector('[data-modal-image]');
     if (image && product.featured_image) {
       image.src = product.featured_image.src;
       image.alt = product.title;
     }
 
     // Update title
-    const title = modal.querySelector('#modalProductTitle');
+    const title = modal.querySelector('[data-modal-title]');
     if (title) {
       title.textContent = product.title;
     }
 
     // Update price
-    const priceElement = modal.querySelector('#modalProductPrice');
+    const priceElement = modal.querySelector('[data-modal-price]');
     if (priceElement && product.variants.length > 0) {
       const price = product.variants[0].price;
       const compareAtPrice = product.variants[0].compare_at_price;
@@ -127,7 +132,7 @@ class ProductGridModal {
     }
 
     // Update description
-    const description = modal.querySelector('#modalProductDescription');
+    const description = modal.querySelector('[data-modal-description]');
     if (description) {
       description.textContent = product.body_html ? this.stripHtml(product.body_html) : '';
     }
@@ -137,56 +142,101 @@ class ProductGridModal {
   }
 
   renderVariants(modal, product) {
-    const variantsContainer = modal.querySelector('#modalProductVariants');
+    const variantsContainer = modal.querySelector('[data-modal-variants]');
     if (!variantsContainer) return;
 
     variantsContainer.innerHTML = '';
 
-    // Get unique option names
-    const optionNames = product.options.map(opt => opt.name);
+    // Get unique option names with fallback
+    const optionNames = (product.options || []).map(opt => opt.name).filter(Boolean);
+    if (!optionNames.length) return;
 
     // Create variant groups for each option
-    optionNames.forEach(optionName => {
-      const optionIndex = product.options.findIndex(opt => opt.name === optionName);
-      const uniqueValues = [...new Set(product.variants.map(v => v.options[optionIndex]).filter(Boolean))];
+    optionNames.forEach((optionName, optionIndex) => {
+      const uniqueValues = [
+        ...new Set(
+          (product.variants || [])
+            .map(variant => this.getVariantOptionValue(variant, optionIndex))
+            .filter(Boolean)
+        )
+      ];
+      if (!uniqueValues.length) return;
 
       // Render variant group
       const group = document.createElement('div');
       group.className = 'variant-group';
       group.innerHTML = `<label class="variant-group__label">${optionName}</label>`;
 
-      const optionsContainer = document.createElement('div');
-      optionsContainer.className = 'variant-group__options';
+      // First option as button group (Color style), other options as dropdown
+      if (optionIndex === 0) {
+        const optionsContainer = document.createElement('div');
+        optionsContainer.className = 'variant-group__options';
 
-      uniqueValues.forEach(value => {
-        const button = document.createElement('button');
-        button.className = 'variant-option';
-        button.type = 'button';
-        button.textContent = value;
-        button.dataset.optionName = optionName;
-        button.dataset.optionValue = value;
+        uniqueValues.forEach((value, valueIndex) => {
+          const button = document.createElement('button');
+          button.className = 'variant-option';
+          button.type = 'button';
+          button.textContent = value;
+          button.dataset.optionName = optionName;
+          button.dataset.optionValue = value;
 
-        button.addEventListener('click', (e) => {
-          e.preventDefault();
-          // Remove previous selection for this option
-          optionsContainer.querySelectorAll('[data-option-name="' + optionName + '"]').forEach(btn => {
-            btn.classList.remove('active');
+          button.addEventListener('click', (e) => {
+            e.preventDefault();
+            optionsContainer.querySelectorAll('[data-option-name="' + optionName + '"]').forEach(btn => {
+              btn.classList.remove('active');
+            });
+            button.classList.add('active');
+            this.selectedVariants[optionName] = value;
           });
-          // Add active class to clicked button
-          button.classList.add('active');
-          // Store selection
-          this.selectedVariants[optionName] = value;
+
+          if (valueIndex === 0) {
+            button.classList.add('active');
+            this.selectedVariants[optionName] = value;
+          }
+
+          optionsContainer.appendChild(button);
         });
 
-        optionsContainer.appendChild(button);
-      });
+        group.appendChild(optionsContainer);
+      } else {
+        const selectWrapper = document.createElement('div');
+        selectWrapper.className = 'variant-group__select-wrapper';
 
-      group.appendChild(optionsContainer);
+        const select = document.createElement('select');
+        select.className = 'variant-group__select';
+        select.dataset.optionName = optionName;
+
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = `Choose your ${optionName.toLowerCase()}`;
+        placeholder.selected = true;
+        select.appendChild(placeholder);
+
+        uniqueValues.forEach(value => {
+          const option = document.createElement('option');
+          option.value = value;
+          option.textContent = value;
+          select.appendChild(option);
+        });
+
+        select.addEventListener('change', () => {
+          this.selectedVariants[optionName] = select.value;
+        });
+
+        const arrow = document.createElement('span');
+        arrow.className = 'variant-group__select-arrow';
+        arrow.setAttribute('aria-hidden', 'true');
+
+        selectWrapper.appendChild(select);
+        selectWrapper.appendChild(arrow);
+        group.appendChild(selectWrapper);
+      }
+
       variantsContainer.appendChild(group);
     });
   }
 
-  addToCart() {
+  addToCart(modal) {
     if (!this.currentProduct) return;
 
     const product = this.currentProduct.product;
@@ -200,9 +250,9 @@ class ProductGridModal {
     } else {
       // Find variant matching selected options
       selectedVariant = product.variants.find(variant => {
-        return product.options.every((option, index) => {
+        return (product.options || []).every((option, index) => {
           const optionName = option.name;
-          return this.selectedVariants[optionName] === variant.options[index];
+          return this.selectedVariants[optionName] === this.getVariantOptionValue(variant, index);
         });
       });
     }
@@ -223,7 +273,7 @@ class ProductGridModal {
     // Cross-sell logic: If Black and Medium variants are selected, add "Soft Winter Jacket"
     if (this.shouldAddCrossSell()) {
       const crossSellProduct = this.getCrossSellProduct(product);
-      if (crossSellProduct) {
+      if (crossSellProduct && crossSellProduct.id) {
         cartItems.push({
           id: crossSellProduct.id,
           quantity: 1
@@ -232,7 +282,17 @@ class ProductGridModal {
     }
 
     // Add to cart
-    this.addItemsToCart(cartItems);
+    this.addItemsToCart(cartItems, modal);
+  }
+
+  getVariantOptionValue(variant, optionIndex) {
+    if (!variant) return '';
+    if (Array.isArray(variant.options) && variant.options.length > optionIndex) {
+      return variant.options[optionIndex];
+    }
+
+    const key = `option${optionIndex + 1}`;
+    return variant[key] || '';
   }
 
   shouldAddCrossSell() {
@@ -257,7 +317,7 @@ class ProductGridModal {
     };
   }
 
-  async addItemsToCart(items) {
+  async addItemsToCart(items, modal) {
     try {
       const response = await fetch('/cart/add.js', {
         method: 'POST',
@@ -276,8 +336,7 @@ class ProductGridModal {
       const cart = await response.json();
       
       // Close modal
-      const modal = document.querySelector('.product-detail-modal');
-      this.closeModal(modal);
+      this.closeModal(modal || document.querySelector('.product-detail-modal.active'));
 
       // Show success message
       this.showCartNotification(items.length);

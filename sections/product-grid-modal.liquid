@@ -37,26 +37,14 @@
                     width="300"
                     height="300"
                   >
-                  <div class="product-grid-modal__overlay">
-                    <button class="product-grid-modal__open-btn" type="button" aria-label="Open product details">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                        <text x="12" y="14" text-anchor="middle" font-size="16" fill="currentColor">+</text>
-                      </svg>
-                    </button>
-                  </div>
+                  <button class="product-grid-modal__open-btn" type="button" aria-label="Open product details">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <circle cx="11" cy="11" r="10" fill="white" stroke="#BDBDBD"/>
+                      <path d="M11 7V15M7 11H15" stroke="#1D1D1D" stroke-linecap="round"/>
+                    </svg>
+                  </button>
                 </div>
               {%- endif -%}
-              
-              <div class="product-grid-modal__body">
-                <h3 class="product-grid-modal__name">{{ product.title }}</h3>
-                <p class="product-grid-modal__price">
-                  {%- if product.compare_at_price -%}
-                    <span class="price-compare">{{ product.compare_at_price | money }}</span>
-                  {%- endif -%}
-                  <span class="price">{{ product.price | money }}</span>
-                </p>
-              </div>
             </div>
           </div>
         {%- endif -%}
@@ -76,32 +64,34 @@
       </button>
 
       <div class="product-detail-modal__container">
-        <!-- Image section -->
-        <div class="product-detail-modal__image-section">
-          <img class="product-detail-modal__image" id="modalProductImage" src="" alt="">
-        </div>
-
-        <!-- Details section -->
-        <div class="product-detail-modal__details-section">
-          <h2 class="product-detail-modal__title" id="modalProductTitle"></h2>
-          
-          <p class="product-detail-modal__price" id="modalProductPrice"></p>
-          
-          <p class="product-detail-modal__description" id="modalProductDescription"></p>
-
-          <!-- Variants section -->
-          <div class="product-detail-modal__variants" id="modalProductVariants">
-            <!-- Dynamically populated -->
+        <div class="product-detail-modal__top">
+          <!-- Image section -->
+          <div class="product-detail-modal__image-section">
+            <img class="product-detail-modal__image" data-modal-image src="" alt="">
           </div>
 
-          <!-- Add to Cart button -->
-          <button class="button button-primary product-detail-modal__add-to-cart" type="button" id="modalAddToCart">
-            ADD TO CART
-            <svg class="button-arrow" width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 0L10.59 1.41L16.17 7H0V9H16.17L10.59 14.59L12 16L20 8L12 0Z" fill="currentColor"/>
-            </svg>
-          </button>
+          <!-- Details section -->
+          <div class="product-detail-modal__details-section">
+            <h2 class="product-detail-modal__title" data-modal-title></h2>
+            
+            <p class="product-detail-modal__price" data-modal-price></p>
+            
+            <p class="product-detail-modal__description" data-modal-description></p>
+          </div>
         </div>
+
+        <!-- Variants section -->
+        <div class="product-detail-modal__variants" data-modal-variants>
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Add to Cart button -->
+        <button class="button button-primary product-detail-modal__add-to-cart" type="button" data-modal-add-to-cart>
+          ADD TO CART
+          <svg class="button-arrow" width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 0L10.59 1.41L16.17 7H0V9H16.17L10.59 14.59L12 16L20 8L12 0Z" fill="currentColor"/>
+          </svg>
+        </button>
       </div>
     </div>
   </div>
