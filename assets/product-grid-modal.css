@@ -97,8 +97,8 @@
   position: relative;
   background-color: #fff;
   border: 1px solid #d6d6d6;
-  max-width: 500px;
-  width: min(94vw, 500px);
+  max-width: 350px;
+  width: min(94vw, 350px);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
   animation: slideUp 0.2s ease-out;
 }
