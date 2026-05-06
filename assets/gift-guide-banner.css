@@ -34,7 +34,7 @@
 .gift-guide-banner__logo-text {
   display: inline-flex;
   align-items: center;
-  font-size: 1rem;
+  font-size: var(--gift-guide-banner-logo-font-size, 16px);
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -50,7 +50,7 @@
 
 .gift-guide-banner__top-text {
   margin: var(--gift-guide-banner-top-text-top, 0) 0 var(--gift-guide-banner-top-text-bottom, 0);
-  font-size: 1rem;
+  font-size: var(--gift-guide-banner-top-text-font-size, 16px);
   line-height: 1.25;
   font-weight: 400;
   text-align: center;
@@ -69,7 +69,7 @@
   color: #000;
   background: #fff544;
   min-height: 48px;
-  font-size: 1rem;
+  font-size: var(--gift-guide-banner-top-button-font-size, 16px);
   line-height: 1;
   font-weight: 400;
   text-transform: uppercase;
@@ -88,18 +88,21 @@
   margin-bottom: var(--gift-guide-banner-hero-button-bottom, 0);
   background: #000;
   color: #fff;
+  font-size: var(--gift-guide-banner-overlay-button-font-size, 16px);
 }
 
 .gift-guide-banner__top-button:hover,
 .gift-guide-banner__top-button:focus-visible {
   transform: translateY(-1px);
-  background: #ffe91f;
+  background: #000;
+  color: #fff;
 }
 
 .gift-guide-banner__overlay-button:hover,
 .gift-guide-banner__overlay-button:focus-visible {
   transform: translateY(-1px);
-  background: #111;
+  background: #fff544;
+  color: #000;
 }
 
 .gift-guide-banner__arrow {
@@ -156,7 +159,7 @@
 .gift-guide-banner__overlay-title {
   margin: 0;
   color: #000;
-  font-size: clamp(2.5rem, 5vw, 4.75rem);
+  font-size: var(--gift-guide-banner-overlay-title-font-size, 76px);
   line-height: 0.95;
   letter-spacing: -0.04em;
   font-weight: 600;
@@ -166,7 +169,7 @@
   margin-top: 18px;
   max-width: 420px;
   color: #111;
-  font-size: 1rem;
+  font-size: var(--gift-guide-banner-overlay-description-font-size, 16px);
   line-height: 1.45;
 }
 
@@ -181,7 +184,7 @@
   align-items: center;
   text-align: center;
   color: #000;
-  font-size: 0.75rem;
+  font-size: var(--gift-guide-banner-bottom-text-font-size, 12px);
   line-height: 1.2;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -247,12 +250,7 @@
     padding-right: 16px;
   }
 
-  .gift-guide-banner__overlay-title {
-    font-size: clamp(2rem, 9vw, 3.5rem);
-  }
-
   .gift-guide-banner__overlay-description {
-    font-size: 0.95rem;
     margin-top: 14px;
   }
 }
@@ -266,15 +264,10 @@
     width: min(60vw, var(--gift-guide-banner-top-logo-width, 152px));
   }
 
-  .gift-guide-banner__top-text {
-    font-size: 0.95rem;
-  }
-
   .gift-guide-banner__top-button,
   .gift-guide-banner__overlay-button {
     gap: 12px;
     padding: 0.85rem 1.15rem;
-    font-size: 0.875rem;
   }
 
   .gift-guide-banner__overlay {
@@ -288,7 +281,6 @@
   }
 
   .gift-guide-banner__bottom-text {
-    font-size: 0.7rem;
     padding-inline: 16px;
   }
 }
