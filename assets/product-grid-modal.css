@@ -44,8 +44,8 @@
 
 .product-grid-modal__open-btn {
   position: absolute;
-  right: 0.8rem;
-  top: 50%;
+  right: calc(var(--product-grid-modal-open-icon-right, 3) * 1%);
+  top: calc(var(--product-grid-modal-open-icon-top, 50) * 1%);
   transform: translateY(-50%);
   width: 2.2rem;
   height: 2.2rem;
