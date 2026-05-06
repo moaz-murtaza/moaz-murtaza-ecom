@@ -13,7 +13,12 @@
     }
   }
 
-  .gift-guide-banner.section-{{ section.id }} {
+{%- endstyle -%}
+
+<section
+  class="gift-guide-banner color-{{ section.settings.color_scheme }} section-{{ section.id }}-padding"
+  data-gift-guide-banner="{{ section.id }}"
+  style="
     --gift-guide-banner-top-row-gap: {{ section.settings.top_row_gap | default: 24 }}px;
     --gift-guide-banner-top-row-padding-x: {{ section.settings.top_row_padding_x | default: 50 }}px;
     --gift-guide-banner-top-row-padding-y: {{ section.settings.top_row_padding_y | default: 10 }}px;
@@ -30,10 +35,8 @@
     --gift-guide-banner-bottom-text-top: {{ section.settings.bottom_text_top | default: 16 }}px;
     --gift-guide-banner-hero-min-height-desktop: {{ section.settings.hero_min_height_desktop | default: 780 }}px;
     --gift-guide-banner-hero-min-height-mobile: {{ section.settings.hero_min_height_mobile | default: 420 }}px;
-  }
-{%- endstyle -%}
-
-<section class="gift-guide-banner color-{{ section.settings.color_scheme }} section-{{ section.id }}-padding" data-gift-guide-banner="{{ section.id }}">
+  "
+>
   <div class="gift-guide-banner__shell">
     <div class="gift-guide-banner__top-row">
       <div class="gift-guide-banner__logo-wrap">
