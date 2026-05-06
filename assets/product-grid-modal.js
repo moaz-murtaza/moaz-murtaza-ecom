@@ -352,25 +352,45 @@ class ProductGridModal {
       if (this.shouldAddCrossSell()) {
         try {
           const configuredId = Number(this.crossSellVariantId);
-          const crossSellVariantId = Number.isFinite(configuredId) && configuredId > 0
-            ? configuredId
-            : await this.getFirstAvailableVariantIdByHandle('dark-winter-jacket');
+          const candidateIds = [];
+          if (Number.isFinite(configuredId) && configuredId > 0) {
+            candidateIds.push(configuredId);
+          }
 
-          if (crossSellVariantId) {
-            await this.addItemsToCart(
-              [
-                {
-                  id: crossSellVariantId,
-                  quantity: 1
-                }
-              ],
-              { suppressAlert: true }
-            );
-            addedCount += 1;
+          // If the configured ID doesn't exist in THIS store, fall back to handle-based lookup.
+          // (Variant IDs differ between stores/environments.)
+          for (let i = 0; i < candidateIds.length + 1; i += 1) {
+            const crossSellVariantId = i < candidateIds.length
+              ? candidateIds[i]
+              : await this.getFirstAvailableVariantIdByHandle('dark-winter-jacket');
+
+            if (!crossSellVariantId) continue;
+
+            try {
+              await this.addItemsToCart(
+                [
+                  {
+                    id: crossSellVariantId,
+                    quantity: 1
+                  }
+                ],
+                { suppressAlert: true }
+              );
+              addedCount += 1;
+              break;
+            } catch (innerError) {
+              const msg = String(innerError && innerError.message ? innerError.message : innerError);
+              if (/cannot\s+find\s+variant/i.test(msg)) {
+                // Try next candidate (usually handle-based fallback).
+                continue;
+              }
+              // Any other error: stop retrying cross-sell.
+              throw innerError;
+            }
           }
         } catch (error) {
           // If cross-sell fails, still treat the main add as success.
-          console.error('Cross-sell add failed:', error);
+          console.warn('Cross-sell add failed:', error);
         }
       }
 
