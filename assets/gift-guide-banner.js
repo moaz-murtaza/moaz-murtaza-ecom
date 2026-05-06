@@ -1,19 +1,35 @@
 (() => {
   const openMenuDrawer = () => {
-    const details = document.getElementById('Details-menu-drawer-container');
-    if (!details) return;
+    // Prefer clicking Dawn's actual hamburger toggle so its drawer JS runs.
+    const details = document.querySelector(
+      'header-drawer details#Details-menu-drawer-container, details#Details-menu-drawer-container'
+    );
 
-    const summary = details.querySelector('summary');
-    const isOpen = details.hasAttribute('open');
+    const summary = details
+      ? details.querySelector('summary.header__icon--menu, summary')
+      : document.querySelector(
+          'header-drawer summary.header__icon--menu, summary.header__icon--menu, .menu-drawer-container > summary'
+        );
 
-    // Prefer theme's own click handler on summary.
     if (summary) {
-      if (!isOpen) summary.click();
+      summary.dispatchEvent(
+        new MouseEvent('click', {
+          bubbles: true,
+          cancelable: true,
+          view: window
+        })
+      );
       return;
     }
 
-    // Fallback if summary isn't found.
-    details.open = true;
+    // Fallback: open the <details> directly.
+    if (details) {
+      details.open = true;
+      details.setAttribute('open', '');
+      return;
+    }
+
+    console.warn('[GiftGuideBanner] Menu drawer not found');
   };
 
   const tryInjectDrawerContent = (section) => {
