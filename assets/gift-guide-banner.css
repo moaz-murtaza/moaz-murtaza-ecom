@@ -202,6 +202,10 @@
   line-height: 1.45;
 }
 
+.gift-guide-banner__overlay-description-inner--mobile {
+  display: none;
+}
+
 .gift-guide-banner__overlay-description p {
   margin: 0;
 }
@@ -352,6 +356,14 @@
     color: #000;
   }
 
+  .gift-guide-banner__overlay-description-inner--desktop {
+    display: none;
+  }
+
+  .gift-guide-banner__overlay-description-inner--mobile {
+    display: block;
+  }
+
   .gift-guide-banner__overlay-button {
     position: absolute;
     left: 50%;
@@ -392,35 +404,5 @@
 
   .gift-guide-banner__bottom-text-inner--mobile {
     display: block;
-  }
-}
-
-@media screen and (max-width: 749px) {
-  .gift-guide-banner__top-row {
-    gap: 10px;
-  }
-
-  .gift-guide-banner__logo-image {
-    width: min(60vw, var(--gift-guide-banner-top-logo-width, 152px));
-  }
-
-  .gift-guide-banner__top-button,
-  .gift-guide-banner__overlay-button {
-    gap: 12px;
-    padding: 0.85rem 1.15rem;
-  }
-
-  .gift-guide-banner__overlay {
-    align-items: flex-start;
-  }
-
-  .gift-guide-banner__overlay-content {
-    margin-top: 28px;
-    margin-left: 20px;
-    max-width: calc(100% - 40px);
-  }
-
-  .gift-guide-banner__bottom-text {
-    padding-inline: 16px;
   }
 }
