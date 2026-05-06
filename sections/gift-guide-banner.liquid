@@ -44,6 +44,7 @@
   "
 >
   {%- assign bottom_text_mobile = section.settings.bottom_text_mobile | default: section.settings.bottom_text -%}
+  {%- assign overlay_description_mobile = section.settings.overlay_description_mobile | default: section.settings.overlay_description -%}
 
   <div class="gift-guide-banner__shell">
     <div class="gift-guide-banner__top-row">
@@ -128,7 +129,12 @@
           {%- endif -%}
 
           {%- if section.settings.overlay_description != blank -%}
-            <div class="gift-guide-banner__overlay-description">{{ section.settings.overlay_description }}</div>
+            <div class="gift-guide-banner__overlay-description">
+              <div class="gift-guide-banner__overlay-description-inner gift-guide-banner__overlay-description-inner--desktop">{{ section.settings.overlay_description }}</div>
+              {%- if overlay_description_mobile != blank -%}
+                <div class="gift-guide-banner__overlay-description-inner gift-guide-banner__overlay-description-inner--mobile">{{ overlay_description_mobile }}</div>
+              {%- endif -%}
+            </div>
           {%- endif -%}
 
           {%- if section.settings.overlay_button_link != blank -%}
@@ -221,6 +227,12 @@
       "id": "overlay_description",
       "label": "Banner description",
       "default": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season."
+    },
+    {
+      "type": "textarea",
+      "id": "overlay_description_mobile",
+      "label": "Banner description (mobile)",
+      "default": "Discover Joy: Your Ultimate Holiday Gift Destination."
     },
     {
       "type": "text",
