@@ -167,18 +167,23 @@ class ProductGridModal {
       group.className = 'variant-group';
       group.innerHTML = `<label class="variant-group__label">${optionName}</label>`;
 
-      // First option as button group (Color style), other options as dropdown
+      // First option as color selector with left borders, other options as dropdown
       if (optionIndex === 0) {
         const optionsContainer = document.createElement('div');
-        optionsContainer.className = 'variant-group__options';
+        optionsContainer.className = 'variant-group__color-options';
 
         uniqueValues.forEach((value, valueIndex) => {
           const button = document.createElement('button');
-          button.className = 'variant-option';
+          button.className = 'variant-option variant-option--color';
           button.type = 'button';
           button.textContent = value;
           button.dataset.optionName = optionName;
           button.dataset.optionValue = value;
+          button.setAttribute('data-color', value.toLowerCase());
+
+          // Set left border color based on the value
+          const borderColor = this.getColorValue(value);
+          button.style.borderLeftColor = borderColor;
 
           button.addEventListener('click', (e) => {
             e.preventDefault();
@@ -402,6 +407,30 @@ class ProductGridModal {
     div.innerHTML = html;
     return div.textContent || div.innerText || '';
   }
+
+  getColorValue(colorName) {
+    // Map color names to hex values
+    const colorMap = {
+      'white': '#FFFFFF',
+      'black': '#000000',
+      'red': '#EF4444',
+      'blue': '#3B82F6',
+      'green': '#10B981',
+      'yellow': '#FBBF24',
+      'purple': '#A855F7',
+      'pink': '#EC4899',
+      'gray': '#6B7280',
+      'brown': '#92400E',
+      'orange': '#F97316',
+      'navy': '#001F3F',
+      'beige': '#D4A574',
+      'cream': '#FFFDD0',
+      'gray': '#808080',
+    };
+    
+    const lowerName = colorName.toLowerCase();
+    return colorMap[lowerName] || '#000000';
+  }
 }
 
 // Add slide animations to stylesheet
@@ -427,6 +456,101 @@ style.textContent = `
       opacity: 0;
       transform: translateY(-20px);
     }
+  }
+
+  /* Variant Group Styling */
+  .variant-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .variant-group__label {
+    display: block;
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 130%;
+    color: #333333;
+    margin-bottom: 0.75rem;
+    text-transform: capitalize;
+  }
+
+  /* Color Options Styling */
+  .variant-group__color-options {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .variant-option--color {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    padding-left: 1.25rem;
+    border: 1px solid #000000;
+    border-left: 5px solid #000000;
+    background-color: #FFFFFF;
+    font-family: 'Jost', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 100%;
+    letter-spacing: -2%;
+    color: #000000;
+    cursor: pointer;
+    text-transform: capitalize;
+    transition: all 0.3s ease;
+  }
+
+  .variant-option--color:hover {
+    background-color: #F5F5F5;
+  }
+
+  .variant-option--color.active {
+    background-color: #F5F5F5;
+    font-weight: 500;
+  }
+
+  /* Select Wrapper Styling */
+  .variant-group__select-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+
+  .variant-group__select {
+    width: 100%;
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    border: 1px solid #000000;
+    background-color: #FFFFFF;
+    font-family: 'Jost', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 100%;
+    letter-spacing: -2%;
+    color: #000000;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+
+  .variant-group__select option {
+    font-family: 'Jost', sans-serif;
+    font-size: 16px;
+    color: #000000;
+  }
+
+  .variant-group__select-arrow {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    width: 12px;
+    height: 6px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 6'%3E%3Cpath stroke='%23000' stroke-width='1.5' fill='none' d='M1 1l5 4 5-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: contain;
   }
 `;
 document.head.appendChild(style);
