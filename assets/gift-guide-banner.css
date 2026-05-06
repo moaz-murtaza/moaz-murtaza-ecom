@@ -77,6 +77,7 @@
   cursor: pointer;
   transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+  width: 220px;
 }
 
 .gift-guide-banner__drawer-button {
