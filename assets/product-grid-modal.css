@@ -166,7 +166,7 @@
 
 .product-detail-modal__top {
   display: grid;
-  grid-template-columns: 4.2rem 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 0.6rem;
   align-items: start;
 }
