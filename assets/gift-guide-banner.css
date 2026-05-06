@@ -162,7 +162,7 @@
   font-size: var(--gift-guide-banner-overlay-title-font-size, 76px);
   line-height: 0.95;
   letter-spacing: -0.04em;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .gift-guide-banner__overlay-description {
