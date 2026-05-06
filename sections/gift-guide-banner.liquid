@@ -52,12 +52,17 @@
         type="button"
         class="gift-guide-banner__menu-toggle"
         aria-label="Menu"
+        aria-expanded="false"
         data-gift-guide-banner-menu-toggle
       >
-        <svg width="18" height="10" viewBox="0 0 18 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <svg class="gift-guide-banner__menu-icon gift-guide-banner__menu-icon--open" width="18" height="10" viewBox="0 0 18 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
           <path d="M0 1H18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
           <path d="M0 5H18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
           <path d="M0 9H18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        <svg class="gift-guide-banner__menu-icon gift-guide-banner__menu-icon--close" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <path d="M2 2L16 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M16 2L2 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
         </svg>
       </button>
 
@@ -96,8 +101,8 @@
       {%- endif -%}
     </div>
 
-    <template data-gift-guide-banner-drawer-template>
-      <div class="gift-guide-banner__drawer-block">
+    <div class="gift-guide-banner__mobile-nav" data-gift-guide-banner-mobile-nav hidden>
+      <div class="gift-guide-banner__mobile-nav-inner">
         {%- if section.settings.top_text != blank -%}
           <p class="gift-guide-banner__drawer-text">{{ section.settings.top_text | escape }}</p>
         {%- endif -%}
@@ -119,7 +124,9 @@
           {%- endif -%}
         {%- endif -%}
       </div>
-    </template>
+    </div>
+
+    {%- comment -%}Mobile nav dropdown lives in the section (not the theme drawer).{%- endcomment -%}
 
     <div class="gift-guide-banner__hero">
       {%- if section.settings.hero_image != blank or section.settings.hero_image_mobile != blank -%}
