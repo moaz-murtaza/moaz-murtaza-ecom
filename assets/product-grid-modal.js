@@ -410,7 +410,7 @@ class ProductGridModal {
       .map(v => String(v || '').trim().toLowerCase())
       .filter(Boolean);
     const hasBlack = values.includes('black');
-    const hasMedium = values.includes('medium');
+    const hasMedium = values.includes('m');
     return hasBlack && hasMedium;
   }
 
