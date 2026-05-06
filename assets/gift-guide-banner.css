@@ -118,6 +118,25 @@
   flex: 0 0 auto;
 }
 
+.gift-guide-banner__menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: #000;
+  cursor: pointer;
+}
+
+.gift-guide-banner__wide-arrow {
+  display: none;
+  width: 24px;
+  height: 12px;
+  flex: 0 0 auto;
+}
+
 .gift-guide-banner__top-button {
   margin: var(--gift-guide-banner-top-button-top, 0) 0 var(--gift-guide-banner-top-button-bottom, 0);
 }
@@ -387,7 +406,7 @@
   .gift-guide-banner__overlay-button {
     position: absolute;
     left: 50%;
-    top: 300px;
+    top: 337px;
     transform: translateX(-50%);
     margin: 0;
     padding: 13px 20px;
@@ -399,6 +418,10 @@
 
   .gift-guide-banner__overlay-button .gift-guide-banner__arrow {
     display: none;
+  }
+
+  .gift-guide-banner__overlay-button .gift-guide-banner__wide-arrow {
+    display: inline-block;
   }
 
   .gift-guide-banner__overlay-button .gift-guide-banner__wide-arrow {
