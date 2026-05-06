@@ -16,6 +16,7 @@
   .product-grid-modal[data-section-id="{{ section.id }}"] {
     --product-grid-modal-open-icon-top: {{ section.settings.open_icon_top | default: 50 }};
     --product-grid-modal-open-icon-right: {{ section.settings.open_icon_right | default: 3 }};
+    --product-grid-modal-open-icon-left: {{ section.settings.open_icon_left | default: 97 }};
   }
 {%- endstyle -%}
 
@@ -35,6 +36,17 @@
             <div class="product-grid-modal__card">
               {%- if product.featured_image -%}
                 <div class="product-grid-modal__image-wrapper">
+                  {%- liquid
+                    assign top_key = 'open_icon_' | append: i | append: '_top'
+                    assign left_key = 'open_icon_' | append: i | append: '_left'
+                    assign icon_top = section.settings[top_key] | default: section.settings.open_icon_top | default: 50
+                    assign icon_left = section.settings[left_key] | default: section.settings.open_icon_left
+                    if icon_left == blank
+                      assign icon_right = section.settings.open_icon_right | default: 3
+                      assign icon_left = 100 | minus: icon_right
+                    endif
+                  -%}
+                  {%- capture icon_vars -%}--product-grid-modal-open-icon-top: {{ icon_top }}; --product-grid-modal-open-icon-left: {{ icon_left }};{%- endcapture -%}
                   <img 
                     src="{{ product.featured_image | image_url: width: 300 }}" 
                     alt="{{ product.title }}"
@@ -42,7 +54,7 @@
                     width="300"
                     height="300"
                   >
-                  <button class="product-grid-modal__open-btn" type="button" aria-label="Open product details">
+                  <button class="product-grid-modal__open-btn" type="button" aria-label="Open product details" style="{{ icon_vars | strip }}">
                     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                       <circle cx="11" cy="11" r="10" fill="white" stroke="#BDBDBD"/>
                       <path d="M11 7V15M7 11H15" stroke="#1D1D1D" stroke-linecap="round"/>
@@ -178,6 +190,16 @@
     },
     {
       "type": "range",
+      "id": "open_icon_left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Open icon left position",
+      "default": 97
+    },
+    {
+      "type": "range",
       "id": "open_icon_right",
       "min": 0,
       "max": 100,
@@ -185,6 +207,131 @@
       "unit": "%",
       "label": "Open icon right position",
       "default": 3
+    },
+
+    {
+      "type": "header",
+      "content": "Per product + icon position"
+    },
+    {
+      "type": "range",
+      "id": "open_icon_1_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Product 1 icon top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "open_icon_1_left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Product 1 icon left",
+      "default": 97
+    },
+    {
+      "type": "range",
+      "id": "open_icon_2_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Product 2 icon top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "open_icon_2_left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Product 2 icon left",
+      "default": 97
+    },
+    {
+      "type": "range",
+      "id": "open_icon_3_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Product 3 icon top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "open_icon_3_left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Product 3 icon left",
+      "default": 97
+    },
+    {
+      "type": "range",
+      "id": "open_icon_4_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Product 4 icon top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "open_icon_4_left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Product 4 icon left",
+      "default": 97
+    },
+    {
+      "type": "range",
+      "id": "open_icon_5_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Product 5 icon top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "open_icon_5_left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Product 5 icon left",
+      "default": 97
+    },
+    {
+      "type": "range",
+      "id": "open_icon_6_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Product 6 icon top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "open_icon_6_left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Product 6 icon left",
+      "default": 97
     },
     {
       "type": "range",
