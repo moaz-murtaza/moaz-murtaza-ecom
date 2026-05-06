@@ -476,6 +476,7 @@
 
 .main-section{
   padding: 50px;
+  max-width: 1440px;
 }
 
 /* Responsive */
