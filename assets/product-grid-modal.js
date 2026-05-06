@@ -163,7 +163,7 @@ class ProductGridModal {
     // Create variant groups for each option
     orderedOptions.forEach((option) => {
       const optionName = option.name;
-      const optionIndex = options.findIndex(opt => opt.name === optionName);
+      const optionIndex = option._index;
       const uniqueValues = [
         ...new Set(
           (product.variants || [])
@@ -183,8 +183,10 @@ class ProductGridModal {
       if (optionRole === 'color') {
         const optionsContainer = document.createElement('div');
         optionsContainer.className = 'variant-group__color-options';
+        optionsContainer.setAttribute('role', 'radiogroup');
+        optionsContainer.setAttribute('aria-label', optionName);
 
-        uniqueValues.forEach((value, valueIndex) => {
+        uniqueValues.forEach((value) => {
           const button = document.createElement('button');
           button.className = 'variant-option variant-option--color';
           button.type = 'button';
@@ -210,12 +212,6 @@ class ProductGridModal {
             this.selectedVariants[optionName] = value;
           });
 
-          if (valueIndex === 0) {
-            button.classList.add('active');
-            button.setAttribute('aria-checked', 'true');
-            this.selectedVariants[optionName] = value;
-          }
-
           optionsContainer.appendChild(button);
         });
 
@@ -228,14 +224,20 @@ class ProductGridModal {
         select.className = 'variant-group__select';
         select.dataset.optionName = optionName;
 
-        uniqueValues.forEach((value, valueIndex) => {
+        // Placeholder option (Figma: “Choose your size”)
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.selected = true;
+        placeholder.disabled = true;
+        placeholder.textContent = optionRole === 'size'
+          ? 'Choose your size'
+          : `Choose your ${String(optionName).toLowerCase()}`;
+        select.appendChild(placeholder);
+
+        uniqueValues.forEach((value) => {
           const option = document.createElement('option');
           option.value = value;
           option.textContent = value;
-          if (valueIndex === 0) {
-            option.selected = true;
-            this.selectedVariants[optionName] = value;
-          }
           select.appendChild(option);
         });
 
@@ -261,21 +263,23 @@ class ProductGridModal {
 
     const product = this.currentProduct.product;
     
-    // Find matching variant based on selected options
-    let selectedVariant = null;
-    
-    if (Object.keys(this.selectedVariants).length === 0) {
-      // No variants selected, use first available
-      selectedVariant = product.variants[0];
-    } else {
-      // Find variant matching selected options
-      selectedVariant = product.variants.find(variant => {
-        return (product.options || []).every((option, index) => {
-          const optionName = option.name;
-          return this.selectedVariants[optionName] === this.getVariantOptionValue(variant, index);
-        });
-      });
+    const productOptions = (product.options || []).filter(o => o && o.name);
+    const missing = productOptions
+      .map(o => o.name)
+      .filter(name => !this.selectedVariants[name]);
+
+    if (missing.length) {
+      alert('Please select all required options');
+      return;
     }
+
+    // Find variant matching selected options
+    const selectedVariant = (product.variants || []).find(variant => {
+      return productOptions.every((option, index) => {
+        const optionName = option.name;
+        return this.selectedVariants[optionName] === this.getVariantOptionValue(variant, index);
+      });
+    });
 
     if (!selectedVariant) {
       alert('Please select all required options');
