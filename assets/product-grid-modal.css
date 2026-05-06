@@ -242,10 +242,6 @@
   line-height: 1;
 }
 
-.variant-option:hover {
-  border-color: #8e8e8e;
-}
-
 /* Color variant styling with left border */
 .variant-option--color {
   display: flex;
