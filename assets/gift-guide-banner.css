@@ -118,6 +118,10 @@
   flex: 0 0 auto;
 }
 
+.gift-guide-banner__menu-icon--open {
+  display: block;
+}
+
 .gift-guide-banner__menu-icon--close {
   display: none;
 }
@@ -132,6 +136,8 @@
   gap: 12px;
   background: #f7f7f7;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+  justify-items: center;
+  text-align: center;
 }
 
 .gift-guide-banner__top-button {
@@ -269,7 +275,7 @@
   font-size: 16px;
   line-height: 1.25;
   color: #000;
-  text-align: left;
+  text-align: center;
 }
 
 .gift-guide-banner__bottom-text p {
@@ -355,7 +361,8 @@
   }
 
   .gift-guide-banner__drawer-button {
-    width: 220px;
+    width: 240px;
+    margin: 0 auto;
   }
 
   .gift-guide-banner__hero {
