@@ -1,0 +1,196 @@
+{{ 'product-grid-modal.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<section class="product-grid-modal color-{{ section.settings.color_scheme }} section-{{ section.id }}-padding" data-section-id="{{ section.id }}">
+  <div class="page-width">
+    {%- if section.settings.title -%}
+      <h2 class="product-grid-modal__title h2">{{ section.settings.title }}</h2>
+    {%- endif -%}
+
+    <div class="product-grid-modal__grid" data-grid-id="{{ section.id }}">
+      {%- for i in (1..6) -%}
+        {%- assign product_setting = 'product_' | append: i -%}
+        {%- assign product = section.settings[product_setting] -%}
+        
+        {%- if product != blank -%}
+          <div class="product-grid-modal__item" data-product-id="{{ product.id }}" data-product-handle="{{ product.handle }}">
+            <div class="product-grid-modal__card">
+              {%- if product.featured_image -%}
+                <div class="product-grid-modal__image-wrapper">
+                  <img 
+                    src="{{ product.featured_image | image_url: width: 300 }}" 
+                    alt="{{ product.title }}"
+                    class="product-grid-modal__image"
+                    width="300"
+                    height="300"
+                  >
+                  <div class="product-grid-modal__overlay">
+                    <button class="product-grid-modal__open-btn" type="button" aria-label="Open product details">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                        <text x="12" y="14" text-anchor="middle" font-size="16" fill="currentColor">+</text>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              {%- endif -%}
+              
+              <div class="product-grid-modal__body">
+                <h3 class="product-grid-modal__name">{{ product.title }}</h3>
+                <p class="product-grid-modal__price">
+                  {%- if product.compare_at_price -%}
+                    <span class="price-compare">{{ product.compare_at_price | money }}</span>
+                  {%- endif -%}
+                  <span class="price">{{ product.price | money }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<!-- Product Detail Modal -->
+<div class="product-detail-modal" id="productModal-{{ section.id }}" data-modal-id="{{ section.id }}">
+  <div class="product-detail-modal__overlay" data-modal-close>
+    <div class="product-detail-modal__content">
+      <button class="product-detail-modal__close" type="button" aria-label="Close modal" data-modal-close>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <div class="product-detail-modal__container">
+        <!-- Image section -->
+        <div class="product-detail-modal__image-section">
+          <img class="product-detail-modal__image" id="modalProductImage" src="" alt="">
+        </div>
+
+        <!-- Details section -->
+        <div class="product-detail-modal__details-section">
+          <h2 class="product-detail-modal__title" id="modalProductTitle"></h2>
+          
+          <p class="product-detail-modal__price" id="modalProductPrice"></p>
+          
+          <p class="product-detail-modal__description" id="modalProductDescription"></p>
+
+          <!-- Variants section -->
+          <div class="product-detail-modal__variants" id="modalProductVariants">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Add to Cart button -->
+          <button class="button button-primary product-detail-modal__add-to-cart" type="button" id="modalAddToCart">
+            ADD TO CART
+            <svg class="button-arrow" width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 0L10.59 1.41L16.17 7H0V9H16.17L10.59 14.59L12 16L20 8L12 0Z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ 'product-grid-modal.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Product Grid Modal",
+  "tag": "section",
+  "class": "section section-product-grid-modal",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Tisso vison in the wild"
+    },
+    {
+      "type": "product",
+      "id": "product_1",
+      "label": "Product 1"
+    },
+    {
+      "type": "product",
+      "id": "product_2",
+      "label": "Product 2"
+    },
+    {
+      "type": "product",
+      "id": "product_3",
+      "label": "Product 3"
+    },
+    {
+      "type": "product",
+      "id": "product_4",
+      "label": "Product 4"
+    },
+    {
+      "type": "product",
+      "id": "product_5",
+      "label": "Product 5"
+    },
+    {
+      "type": "product",
+      "id": "product_6",
+      "label": "Product 6"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "background-1",
+          "label": "Background-1"
+        },
+        {
+          "value": "background-2",
+          "label": "Background-2"
+        },
+        {
+          "value": "background-3",
+          "label": "Background-3"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 36
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,177 @@
+{{ 'gift-guide-banner.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<section class="gift-guide-banner color-{{ section.settings.color_scheme }} section-{{ section.id }}-padding">
+  <div class="page-width">
+    <div class="gift-guide-banner__content">
+      {%- if section.settings.logo_image -%}
+        <div class="gift-guide-banner__logo">
+          <img 
+            src="{{ section.settings.logo_image | image_url: width: 300 }}" 
+            alt="{{ section.settings.logo_text }}"
+            width="150"
+            height="auto"
+          >
+        </div>
+      {%- endif -%}
+
+      <div class="gift-guide-banner__text-section">
+        <h2 class="gift-guide-banner__title h2">
+          {{ section.settings.banner_text }}
+        </h2>
+
+        <div class="gift-guide-banner__buttons">
+          <a 
+            href="#" 
+            class="button button-primary gift-guide-banner__button"
+            data-button-text="{{ section.settings.button_1_text }}"
+          >
+            <span>{{ section.settings.button_1_text }}</span>
+            <svg class="button-arrow" width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 0L10.59 1.41L16.17 7H0V9H16.17L10.59 14.59L12 16L20 8L12 0Z" fill="currentColor"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="gift-guide-banner__secondary">
+        <div class="gift-guide-banner__secondary-content">
+          <h3 class="gift-guide-banner__secondary-title h2">
+            {{ section.settings.secondary_title }}
+          </h3>
+
+          <p class="gift-guide-banner__secondary-text body-text">
+            {{ section.settings.secondary_description }}
+          </p>
+
+          <a 
+            href="#" 
+            class="button button-secondary gift-guide-banner__button"
+            data-button-text="{{ section.settings.button_2_text }}"
+          >
+            <span>{{ section.settings.button_2_text }}</span>
+            <svg class="button-arrow" width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 0L10.59 1.41L16.17 7H0V9H16.17L10.59 14.59L12 16L20 8L12 0Z" fill="currentColor"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="gift-guide-banner__message">
+        {{ section.settings.banner_message }}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="{{ 'gift-guide-banner.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Gift Guide Banner",
+  "tag": "section",
+  "class": "section section-gift-guide-banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo Image"
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo Alt Text",
+      "default": "Tisso Vison"
+    },
+    {
+      "type": "textarea",
+      "id": "banner_text",
+      "label": "Banner Text",
+      "default": "Find the ideal gift for your loved ones."
+    },
+    {
+      "type": "text",
+      "id": "button_1_text",
+      "label": "Button 1 Text",
+      "default": "CHOOSE GIFT"
+    },
+    {
+      "type": "textarea",
+      "id": "secondary_title",
+      "label": "Secondary Section Title",
+      "default": "The Gift Guide"
+    },
+    {
+      "type": "textarea",
+      "id": "secondary_description",
+      "label": "Secondary Section Description",
+      "default": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season."
+    },
+    {
+      "type": "text",
+      "id": "button_2_text",
+      "label": "Button 2 Text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "textarea",
+      "id": "banner_message",
+      "label": "Bottom Banner Message",
+      "default": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "background-1",
+          "label": "Background-1"
+        },
+        {
+          "value": "background-2",
+          "label": "Background-2"
+        },
+        {
+          "value": "background-3",
+          "label": "Background-3"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 36
+    }
+  ]
+}
+{% endschema %}
