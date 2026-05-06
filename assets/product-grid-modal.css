@@ -141,8 +141,7 @@
 }
 
 .product-detail-modal__image-section {
-  width: 4.2rem;
-  height: 4.9rem;
+  height: 140px;
   flex: 0 0 4.2rem;
   background-color: #f3f3f3;
   border-radius: 0;
