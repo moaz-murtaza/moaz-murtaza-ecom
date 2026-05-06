@@ -467,7 +467,18 @@ class ProductGridModal {
   }
 
   getColorValue(colorName) {
-    // Map color names to hex values
+    const raw = String(colorName || '').trim();
+    if (!raw) return '#000000';
+
+    // If merchant uses direct color values, allow them (hex / rgb / hsl)
+    if (/^#([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(raw)) {
+      return raw;
+    }
+    if (/^(rgb|rgba|hsl|hsla)\(/i.test(raw)) {
+      return raw;
+    }
+
+    // Map common color names to hex values
     const colorMap = {
       'white': '#FFFFFF',
       'black': '#000000',
@@ -477,7 +488,6 @@ class ProductGridModal {
       'yellow': '#FBBF24',
       'purple': '#A855F7',
       'pink': '#EC4899',
-      'gray': '#6B7280',
       'brown': '#92400E',
       'orange': '#F97316',
       'navy': '#001F3F',
@@ -486,8 +496,17 @@ class ProductGridModal {
       'gray': '#808080',
     };
     
-    const lowerName = colorName.toLowerCase();
-    return colorMap[lowerName] || '#000000';
+    const lowerName = raw.toLowerCase();
+    if (colorMap[lowerName]) return colorMap[lowerName];
+
+    // Last resort: if the browser recognizes it as a CSS color keyword, use it.
+    // This supports values like "teal", "rebeccapurple", etc.
+    const probe = document.createElement('span');
+    probe.style.color = '';
+    probe.style.color = raw;
+    if (probe.style.color) return raw;
+
+    return '#000000';
   }
 }
 
