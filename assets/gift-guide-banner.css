@@ -14,7 +14,7 @@
   align-items: center;
   gap: var(--gift-guide-banner-top-row-gap, 24px);
   padding: var(--gift-guide-banner-top-row-padding-y, 10px) var(--gift-guide-banner-top-row-padding-x, 50px);
-  background: #fff;
+  background: #f5f5f5;
 }
 
 .gift-guide-banner__logo-wrap {
