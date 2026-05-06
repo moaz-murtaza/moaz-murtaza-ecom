@@ -3,6 +3,7 @@ class ProductGridModal {
     this.currentProduct = null;
     this.selectedVariants = {};
     this.activeDropdown = null;
+    this.crossSellVariantCache = new Map();
     this.init();
   }
 
@@ -304,7 +305,7 @@ class ProductGridModal {
     });
   }
 
-  addToCart(modal) {
+  async addToCart(modal) {
     if (!this.currentProduct) return;
 
     const product = this.currentProduct.product;
@@ -340,14 +341,20 @@ class ProductGridModal {
       }
     ];
 
-    // Cross-sell logic: If Black and Medium variants are selected, add "Soft Winter Jacket"
+    // Cross-sell logic: If Black and Medium variants are selected, also add "Soft Winter Jacket"
+    // Handle provided by you: dark-winter-jacket
     if (this.shouldAddCrossSell()) {
-      const crossSellProduct = this.getCrossSellProduct(product);
-      if (crossSellProduct && crossSellProduct.id) {
-        cartItems.push({
-          id: crossSellProduct.id,
-          quantity: 1
-        });
+      try {
+        const crossSellVariantId = await this.getFirstAvailableVariantIdByHandle('dark-winter-jacket');
+        if (crossSellVariantId) {
+          cartItems.push({
+            id: crossSellVariantId,
+            quantity: 1
+          });
+        }
+      } catch (error) {
+        // If cross-sell fails, still add the main item.
+        console.error('Cross-sell add failed:', error);
       }
     }
 
@@ -391,25 +398,41 @@ class ProductGridModal {
   }
 
   shouldAddCrossSell() {
-    // Check if both "Black" and "Medium" are selected
-    const hasBlack = Object.values(this.selectedVariants).some(val => val === 'Black');
-    const hasMedium = Object.values(this.selectedVariants).some(val => val === 'Medium');
-    
+    // Check if both "Black" and "Medium" are selected (case-insensitive)
+    const values = Object.values(this.selectedVariants)
+      .map(v => String(v || '').trim().toLowerCase())
+      .filter(Boolean);
+    const hasBlack = values.includes('black');
+    const hasMedium = values.includes('medium');
     return hasBlack && hasMedium;
   }
 
-  getCrossSellProduct(currentProduct) {
-    // Find "Soft Winter Jacket" product
-    // This searches for a product with the title containing "Soft Winter Jacket"
-    // In a real scenario, you'd fetch all products or have this configured
-    const crossSellHandle = 'soft-winter-jacket';
-    
-    // For now, we'll return this configuration
-    // You can modify this to fetch dynamically if needed
-    return {
-      id: null,
-      handle: crossSellHandle
-    };
+  async fetchProductJsonByHandle(handle) {
+    const response = await fetch(`/products/${handle}.json`, { method: 'GET' });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch product (${handle}): ${response.statusText}`);
+    }
+    return response.json();
+  }
+
+  async getFirstAvailableVariantIdByHandle(handle) {
+    if (!handle) return null;
+    if (this.crossSellVariantCache.has(handle)) {
+      return this.crossSellVariantCache.get(handle);
+    }
+
+    const productData = await this.fetchProductJsonByHandle(handle);
+    const product = productData && productData.product;
+    const variants = (product && product.variants) || [];
+    if (!variants.length) {
+      this.crossSellVariantCache.set(handle, null);
+      return null;
+    }
+
+    const availableVariant = variants.find(v => v && (v.available === true || v.available === 'true'));
+    const variantId = (availableVariant || variants[0]).id || null;
+    this.crossSellVariantCache.set(handle, variantId);
+    return variantId;
   }
 
   async addItemsToCart(items, modal) {
