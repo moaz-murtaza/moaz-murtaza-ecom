@@ -80,6 +80,10 @@
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
 }
 
+.gift-guide-banner__top-button{
+  width: 200px !important;
+}
+
 .gift-guide-banner__drawer-button {
   display: inline-flex;
   align-items: center;
