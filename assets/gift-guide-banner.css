@@ -306,6 +306,7 @@
   animation-delay: 180ms;
   padding: 10px 0px;
   background-color: #F5F5F5;
+  font-family: jost;
 }
 
 @keyframes giftGuideFadeUp {
