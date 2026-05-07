@@ -488,7 +488,7 @@
   }
 
   .product-grid-modal__title {
-    font-size: 2.2rem;
+    font-size: 24px;
     text-align: center;
     margin-bottom: 1.5rem;
   }
@@ -497,6 +497,6 @@
     padding: 0;
   }
   .main-section{
-    padding: auto;
+    padding: 15px;
   }
 }
