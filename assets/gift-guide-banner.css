@@ -471,4 +471,8 @@
   .gift-guide-banner__bottom-text-inner--mobile {
     display: block;
   }
+
+  .gift-guide-banner--loaded .gift-guide-banner__bottom-text{
+    font-size: 14px;
+  }
 }
