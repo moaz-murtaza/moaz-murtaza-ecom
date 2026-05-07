@@ -98,7 +98,7 @@
   background-color: #ffffff;
   border: 0;
   width: min(311px, calc(100vw - 2rem));
-  height: 420px;
+  height: auto;
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.2);
   animation: slideUp 0.2s ease-out;
 }
