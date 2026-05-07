@@ -41,7 +41,7 @@
         "overlay_title_font_size": 70,
         "overlay_description_font_size": 18,
         "overlay_button_font_size": 16,
-        "bottom_text_font_size": 12,
+        "bottom_text_font_size": 14,
         "top_row_gap": 18,
         "top_row_padding_x": 50,
         "top_row_padding_y": 10,
